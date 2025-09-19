@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GestionCanchasDesktop", "GestionCanchasDesktop\GestionCanchasDesktop.csproj", "{1BDAF1B2-BD69-4E7B-A604-BEB9532B3AFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BDAF1B2-BD69-4E7B-A604-BEB9532B3AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BDAF1B2-BD69-4E7B-A604-BEB9532B3AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BDAF1B2-BD69-4E7B-A604-BEB9532B3AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BDAF1B2-BD69-4E7B-A604-BEB9532B3AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D2973BD8-2F69-47EF-96C2-07B728E56468}
+	EndGlobalSection
+EndGlobal
