@@ -169,6 +169,7 @@
             btnCanchas.TabIndex = 6;
             btnCanchas.Text = "Canchas";
             btnCanchas.UseVisualStyleBackColor = true;
+            btnCanchas.Click += btnCanchas_Click;
             // 
             // btnUsuarios
             // 

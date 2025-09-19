@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 
 namespace GestionCanchasDesktop
@@ -30,23 +29,27 @@ namespace GestionCanchasDesktop
             btnReportes.Enabled = isAdmin;
             btnBackup.Enabled = isAdmin;
 
-            // Jugadores: Admin o Canchero
-            bool puedeJugadores = _rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase)
-                               || _rol.Equals("Canchero", StringComparison.OrdinalIgnoreCase);
-            btnJugadores.Enabled = puedeJugadores;
+            // Admin o Canchero pueden Jugadores y Canchas
+            bool puedeOperar = _rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase)
+                            || _rol.Equals("Canchero", StringComparison.OrdinalIgnoreCase);
+            btnJugadores.Enabled = puedeOperar;
+            btnCanchas.Enabled = puedeOperar;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // Si querés, podés cargar un dashboard por defecto aquí
+            // Podés cargar un dashboard por defecto acá si querés
+            // CargarEnPanel(new DashboardForm());
         }
 
         private void CargarEnPanel(Form formHijo)
         {
+            // Cierra el form anterior si había
             if (_formActual != null)
             {
                 _formActual.Close();
                 _formActual.Dispose();
+                _formActual = null;
             }
 
             _formActual = formHijo;
@@ -57,6 +60,7 @@ namespace GestionCanchasDesktop
             panelContenido.Controls.Clear();
             panelContenido.Controls.Add(formHijo);
             formHijo.Show();
+            formHijo.BringToFront();
         }
 
         private void btnUsuarios_Click(object sender, EventArgs e)
@@ -69,19 +73,28 @@ namespace GestionCanchasDesktop
             CargarEnPanel(new JugadoresForm());
         }
 
+        private void btnCanchas_Click(object sender, EventArgs e)
+        {
+            CargarEnPanel(new CanchasForm());
+        }
+
         private void btnReservas_Click(object sender, EventArgs e)
         {
-            // TODO: abrir ReservasForm
+            // Cuando tengas el form de Reservas, descomentá:
+            // CargarEnPanel(new ReservasForm());
+            MessageBox.Show("La vista de Reservas aún no está implementada.");
         }
 
         private void btnReportes_Click(object sender, EventArgs e)
         {
-            // TODO: abrir ReportesForm
+            // TODO: CargarEnPanel(new ReportesForm());
+            MessageBox.Show("La vista de Reportes aún no está implementada.");
         }
 
         private void btnBackup_Click(object sender, EventArgs e)
         {
-            // TODO: abrir BackupForm
+            // TODO: CargarEnPanel(new BackupForm());
+            MessageBox.Show("La vista de Backup aún no está implementada.");
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
