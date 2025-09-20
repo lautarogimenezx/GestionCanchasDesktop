@@ -17,34 +17,44 @@ namespace GestionCanchasDesktop
             _userId = userId;
             _rol = rol;
 
-            // Título
+            // Título y encabezado
             this.Text = $"Gestión de Canchas - Bienvenido {nombre} ({rol})";
-
-            // Header usuario
             lblUsuario.Text = $"{nombre} {apellido} ({rol})";
 
-            // Permisos por rol
+            // ===== Permisos por rol (solo deshabilitar: quedan en gris) =====
             bool isAdmin = _rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
+            bool isCanchero = _rol.Equals("Canchero", StringComparison.OrdinalIgnoreCase);
+            bool isContador = _rol.Equals("Contador", StringComparison.OrdinalIgnoreCase);
+
+            // Admin: todo habilitado
+            // Canchero: Jugadores + Reservas
+            // Contador: Reportes
             btnUsuarios.Enabled = isAdmin;
-            btnReportes.Enabled = isAdmin;
+            btnCanchas.Enabled = isAdmin;
             btnBackup.Enabled = isAdmin;
 
-            // Admin o Canchero pueden Jugadores y Canchas
-            bool puedeOperar = _rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase)
-                            || _rol.Equals("Canchero", StringComparison.OrdinalIgnoreCase);
-            btnJugadores.Enabled = puedeOperar;
-            btnCanchas.Enabled = puedeOperar;
+            btnJugadores.Enabled = isAdmin || isCanchero;
+            btnReservas.Enabled = isAdmin || isCanchero;
+
+            btnReportes.Enabled = isAdmin || isContador;
+
+            // (opcional) si querés que los deshabilitados no tomen foco con TAB:
+            btnUsuarios.TabStop = btnUsuarios.Enabled;
+            btnCanchas.TabStop = btnCanchas.Enabled;
+            btnBackup.TabStop = btnBackup.Enabled;
+            btnJugadores.TabStop = btnJugadores.Enabled;
+            btnReservas.TabStop = btnReservas.Enabled;
+            btnReportes.TabStop = btnReportes.Enabled;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // Podés cargar un dashboard por defecto acá si querés
+            // Podés cargar un dashboard por defecto si querés:
             // CargarEnPanel(new DashboardForm());
         }
 
         private void CargarEnPanel(Form formHijo)
         {
-            // Cierra el form anterior si había
             if (_formActual != null)
             {
                 _formActual.Close();
@@ -65,34 +75,39 @@ namespace GestionCanchasDesktop
 
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
+            if (!btnUsuarios.Enabled) return;  // guard por si el diseñador quedó mal
             CargarEnPanel(new UsuariosForm());
         }
 
         private void btnJugadores_Click(object sender, EventArgs e)
         {
+            if (!btnJugadores.Enabled) return;
             CargarEnPanel(new JugadoresForm());
         }
 
         private void btnCanchas_Click(object sender, EventArgs e)
         {
+            if (!btnCanchas.Enabled) return;
             CargarEnPanel(new CanchasForm());
         }
 
         private void btnReservas_Click(object sender, EventArgs e)
         {
-            // Cuando tengas el form de Reservas, descomentá:
-            // CargarEnPanel(new ReservasForm());
-            MessageBox.Show("La vista de Reservas aún no está implementada.");
+            if (!btnReservas.Enabled) return;
+            // canchero/admin crean reservas -> pasamos el id de usuario logueado como "cancheroId"
+            CargarEnPanel(new ReservasForm(_userId));
         }
 
         private void btnReportes_Click(object sender, EventArgs e)
         {
+            if (!btnReportes.Enabled) return;
             // TODO: CargarEnPanel(new ReportesForm());
             MessageBox.Show("La vista de Reportes aún no está implementada.");
         }
 
         private void btnBackup_Click(object sender, EventArgs e)
         {
+            if (!btnBackup.Enabled) return;
             // TODO: CargarEnPanel(new BackupForm());
             MessageBox.Show("La vista de Backup aún no está implementada.");
         }
