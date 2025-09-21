@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -10,17 +11,13 @@ namespace GestionCanchasDesktop
     {
         private readonly int _cancheroId;
         private bool _gridCfg = false;
-
-        // horario de atención
         private readonly TimeSpan _apertura = new TimeSpan(8, 0, 0);
         private readonly TimeSpan _cierre = new TimeSpan(23, 0, 0);
-
-        // reservas del día (para grisado/chequeo)
-        private List<(DateTime inicio, int durMin)> _reservasDelDia =
-            new List<(DateTime, int)>();
-
-        // para evitar pop-ups al bindear horarios
+        private List<(DateTime inicio, int durMin)> _reservasDelDia = new();
         private bool _silenciarHorarioChange = false;
+
+        // CAMBIO: Variable para guardar el ID de la reserva que estamos editando
+        private int _idReservaEditando = -1;
 
         public ReservasForm(int cancheroId)
         {
@@ -28,32 +25,39 @@ namespace GestionCanchasDesktop
             _cancheroId = cancheroId;
 
             this.Load += ReservasForm_Load;
-
             btnGuardar.Click += btnGuardar_Click;
             btnLimpiar.Click += (_, __) => LimpiarForm();
-            btnCancelar.Click += (_, __) => this.Close();
-
+           
             dgvReservas.CellClick += dgvReservas_CellClick;
             dgvReservas.DataBindingComplete += (_, __) => DecorarBotones();
-
-            // recalcular horarios al cambiar selección
             cmbCancha.SelectedIndexChanged += (_, __) => RefrescarHorarios();
             dtpFecha.ValueChanged += (_, __) => RefrescarHorarios();
             numDuracion.ValueChanged += (_, __) => RefrescarHorarios();
             cmbEstado.SelectedIndexChanged += (_, __) => ToggleMetodoPago();
-
-            // importante para que no se pueda tipear un horario arbitrario
             cmbHorario.DropDownStyle = ComboBoxStyle.DropDownList;
+
+            // CAMBIO: Asignar los eventos a nuestro nuevo ComboBox "fantasma"
+            ConfigurarComboBoxGrid();
         }
 
-        // ========= helpers de solape =========
+        // CAMBIO: Nuevo método para configurar el ComboBox que aparecerá en la grilla
+        private void ConfigurarComboBoxGrid()
+        {
+            // Llenamos el ComboBox con las opciones de pago
+            cmbMetodoPagoGrid.Items.AddRange(new[] { "Efectivo", "Tarjeta", "Transferencia", "QR" });
+
+            // Asignamos los manejadores de eventos
+            cmbMetodoPagoGrid.SelectionChangeCommitted += cmbMetodoPagoGrid_SelectionChangeCommitted;
+            cmbMetodoPagoGrid.Leave += (_, __) => OcultarComboBoxGrid();
+            cmbMetodoPagoGrid.KeyDown += (s, e) => { if (e.KeyCode == Keys.Escape) OcultarComboBoxGrid(); };
+        }
+
         private static bool SeSolapa(DateTime slotInicio, int durSlot, DateTime resInicio, int durRes)
         {
             var slotFin = slotInicio.AddMinutes(durSlot);
             var resFin = resInicio.AddMinutes(durRes);
             return slotInicio < resFin && slotFin > resInicio;
         }
-        // =====================================
 
         private void ReservasForm_Load(object? sender, EventArgs e)
         {
@@ -66,25 +70,21 @@ namespace GestionCanchasDesktop
 
         private void CargarCombos()
         {
-            // Jugadores
             var jug = ReservasService.GetJugadoresActivos();
             cmbJugador.DataSource = jug;
             cmbJugador.DisplayMember = "Nombre";
             cmbJugador.ValueMember = "Id";
 
-            // Canchas
             var can = ReservasService.GetCanchasActivas();
             cmbCancha.DataSource = can;
             cmbCancha.DisplayMember = "Nombre";
             cmbCancha.ValueMember = "Id";
 
-            // Estados (desde DB)
             var est = ReservasService.GetEstados();
             cmbEstado.DataSource = est;
             cmbEstado.DisplayMember = "Nombre";
             cmbEstado.ValueMember = "Id";
 
-            // Métodos de pago
             cmbMetodoPago.Items.Clear();
             cmbMetodoPago.Items.AddRange(new[] { "Efectivo", "Tarjeta", "Transferencia", "QR" });
             cmbMetodoPago.SelectedIndex = -1;
@@ -131,34 +131,25 @@ namespace GestionCanchasDesktop
 
         private void CargarGrilla()
         {
-            var desde = DateTime.Today.AddDays(-7);
-            var hasta = DateTime.Today.AddMonths(1);
-            dgvReservas.DataSource = ReservasService.Listar(desde, hasta, incluirCanceladas: true);
-
-            DecorarBotones(); // aplicar estilo/estado a botones
+            dgvReservas.DataSource = ReservasService.Listar(DateTime.Today.AddDays(-7), DateTime.Today.AddMonths(1), true);
+            DecorarBotones();
         }
 
         private void LimpiarForm()
         {
             if (cmbJugador.Items.Count > 0) cmbJugador.SelectedIndex = 0;
             if (cmbCancha.Items.Count > 0) cmbCancha.SelectedIndex = 0;
-
             dtpFecha.Value = DateTime.Today;
-            numDuracion.Value = 60;
-
+            numDuracion.Value = 1;
             if (cmbEstado.Items.Count > 0) cmbEstado.SelectedIndex = 0;
             cmbMetodoPago.SelectedIndex = -1;
             ToggleMetodoPago();
         }
 
-        // ==== Horarios: grisado y bloqueo por solape ====
         private void RefrescarHorarios()
         {
-            _silenciarHorarioChange = true; // evitar pop-ups al bindear
-
+            _silenciarHorarioChange = true;
             cmbHorario.DrawMode = DrawMode.OwnerDrawFixed;
-
-            // reset completo
             cmbHorario.DataSource = null;
             cmbHorario.Items.Clear();
             cmbHorario.SelectedIndex = -1;
@@ -170,34 +161,26 @@ namespace GestionCanchasDesktop
                 return;
             }
 
-            int dur = (int)numDuracion.Value;
+            int duracionEnMinutos = (int)numDuracion.Value * 60;
             var fecha = dtpFecha.Value.Date;
-
-            // reservas del día para chequeo
             _reservasDelDia = ReservasService.GetReservasDeCanchaPorDia(canchaId, fecha);
 
-            // todos los slots candidatos (cada 30 min dentro de [apertura, cierre - dur])
             var todos = new List<DateTime>();
             DateTime inicioVentana = fecha + _apertura;
             DateTime finVentana = fecha + _cierre;
-            DateTime ultimoInicio = finVentana.AddMinutes(-dur);
+            DateTime ultimoInicio = finVentana.AddMinutes(-duracionEnMinutos);
 
-            for (var s = inicioVentana; s <= ultimoInicio; s = s.AddMinutes(30))
+            for (var s = inicioVentana; s <= ultimoInicio; s = s.AddMinutes(60))
                 todos.Add(s);
 
-            // bind
             var items = todos.Select(dt => new { Valor = dt, Texto = dt.ToString("HH:mm") }).ToList();
             cmbHorario.DisplayMember = "Texto";
             cmbHorario.ValueMember = "Valor";
             cmbHorario.DataSource = items;
-
-            // hooks (idempotentes)
             cmbHorario.DrawItem -= cmbHorario_DrawItem;
             cmbHorario.DrawItem += cmbHorario_DrawItem;
             cmbHorario.SelectedIndexChanged -= cmbHorario_SelectedIndexChanged;
             cmbHorario.SelectedIndexChanged += cmbHorario_SelectedIndexChanged;
-
-            // no seleccionar nada al cargar
             cmbHorario.SelectedIndex = -1;
 
             if (items.Count == 0)
@@ -214,48 +197,43 @@ namespace GestionCanchasDesktop
             var combo = (ComboBox)sender!;
             var item = combo.Items[e.Index];
             var dt = (DateTime)item.GetType().GetProperty("Valor")!.GetValue(item)!;
-            int dur = (int)numDuracion.Value;
+            int duracionEnMinutos = (int)numDuracion.Value * 60;
 
-            bool ocupado = _reservasDelDia.Any(r => SeSolapa((DateTime)dt, dur, r.inicio, r.durMin));
+            bool ocupado = _reservasDelDia.Any(r => SeSolapa(dt, duracionEnMinutos, r.inicio, r.durMin));
 
             var color = ocupado ? SystemBrushes.GrayText : SystemBrushes.ControlText;
-            e.Graphics.DrawString(
-                (string)item.GetType().GetProperty("Texto")!.GetValue(item)!,
-                e.Font!, color, e.Bounds);
-
+            e.Graphics.DrawString((string)item.GetType().GetProperty("Texto")!.GetValue(item)!, e.Font!, color, e.Bounds);
             e.DrawFocusRectangle();
         }
 
         private void cmbHorario_SelectedIndexChanged(object? sender, EventArgs e)
         {
-            if (_silenciarHorarioChange) return; // no molestar al bindear
-            if (cmbHorario.SelectedIndex < 0) return;
+            if (_silenciarHorarioChange || cmbHorario.SelectedIndex < 0) return;
 
             var item = cmbHorario.SelectedItem!;
             var dt = (DateTime)item.GetType().GetProperty("Valor")!.GetValue(item)!;
-            int dur = (int)numDuracion.Value;
+            int duracionEnMinutos = (int)numDuracion.Value * 60;
 
-            bool ocupado = _reservasDelDia.Any(r => SeSolapa((DateTime)dt, dur, r.inicio, r.durMin));
+            bool ocupado = _reservasDelDia.Any(r => SeSolapa(dt, duracionEnMinutos, r.inicio, r.durMin));
             if (ocupado)
             {
-                MessageBox.Show("Ese horario ya está reservado.");
+                MessageBox.Show("Ese horario ya está reservado o se superpone con otra reserva.");
                 cmbHorario.SelectedIndex = -1;
             }
         }
-        // ================================================
 
         private bool Validar()
         {
             if (cmbJugador.SelectedValue is not int) { MessageBox.Show("Seleccione un jugador."); return false; }
             if (cmbCancha.SelectedValue is not int) { MessageBox.Show("Seleccione una cancha."); return false; }
             if (cmbHorario.SelectedValue is not DateTime) { MessageBox.Show("Seleccione un horario disponible."); return false; }
-            if (numDuracion.Value <= 0) { MessageBox.Show("Duración inválida."); return false; }
+            if (numDuracion.Value <= 0) { MessageBox.Show("La duración debe ser de al menos 1 hora."); return false; }
 
             if (cmbEstado.SelectedItem is DataRowView drv)
             {
                 var nombre = drv.Row["Nombre"].ToString();
                 bool pagado = string.Equals(nombre, "Pagado", StringComparison.OrdinalIgnoreCase);
-                if (pagado && (cmbMetodoPago.SelectedItem == null || string.IsNullOrWhiteSpace(cmbMetodoPago.Text)))
+                if (pagado && string.IsNullOrWhiteSpace(cmbMetodoPago.Text))
                 {
                     MessageBox.Show("Debe indicar Método de Pago cuando el estado es Pagado.");
                     return false;
@@ -271,10 +249,9 @@ namespace GestionCanchasDesktop
             int jugadorId = (int)cmbJugador.SelectedValue;
             int canchaId = (int)cmbCancha.SelectedValue;
             DateTime inicio = (DateTime)cmbHorario.SelectedValue;
-            int dur = (int)numDuracion.Value;
+            int duracionEnMinutos = (int)numDuracion.Value * 60;
 
-            // doble check en UI
-            if (_reservasDelDia.Any(r => SeSolapa(inicio, dur, r.inicio, r.durMin)))
+            if (_reservasDelDia.Any(r => SeSolapa(inicio, duracionEnMinutos, r.inicio, r.durMin)))
             {
                 MessageBox.Show("La cancha ya está reservada en ese horario.");
                 RefrescarHorarios();
@@ -282,84 +259,109 @@ namespace GestionCanchasDesktop
             }
 
             int estadoId = (int)cmbEstado.SelectedValue;
-            string? metodoPago = (cmbMetodoPago.Enabled && cmbMetodoPago.SelectedItem != null)
-                ? cmbMetodoPago.SelectedItem.ToString()
-                : null;
+            string? metodoPago = (cmbMetodoPago.Enabled && cmbMetodoPago.SelectedItem != null) ? cmbMetodoPago.SelectedItem.ToString() : null;
 
             try
             {
-                ReservasService.Crear(jugadorId, canchaId, _cancheroId, inicio, dur, estadoId, metodoPago);
+                ReservasService.Crear(jugadorId, canchaId, _cancheroId, inicio, duracionEnMinutos, estadoId, metodoPago);
                 MessageBox.Show("✅ Reserva creada.");
                 CargarGrilla();
-                RefrescarHorarios(); // quita/grisa el horario recién utilizado
-                LimpiarForm();
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show(ex.Message, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 RefrescarHorarios();
+                LimpiarForm();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al guardar: " + ex.Message, ex is InvalidOperationException ? "Atención" : "Error", MessageBoxButtons.OK, ex is InvalidOperationException ? MessageBoxIcon.Warning : MessageBoxIcon.Error);
+                RefrescarHorarios();
             }
         }
 
+        // CAMBIO: La lógica para marcar pagado ahora es diferente.
         private void dgvReservas_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
-            var col = dgvReservas.Columns[e.ColumnIndex].Name;
-
-            // Datos de la fila
+            var colName = dgvReservas.Columns[e.ColumnIndex].Name;
             var row = dgvReservas.Rows[e.RowIndex];
             int id = Convert.ToInt32(row.Cells["Id"].Value);
             string estado = Convert.ToString(row.Cells["Estado"].Value) ?? "";
-            bool activa = row.Cells["Activa"] is DataGridViewCheckBoxCell cb && cb.Value is bool b && b;
+            bool activa = row.Cells["Activa"].Value as bool? ?? false;
 
-            // Guard-rails
-            if (col == "MarcarPagado" && (!activa || estado.Equals("Pagado", StringComparison.OrdinalIgnoreCase)))
-                return;
-
-            if (col == "Cancelar" && !activa)
-                return;
-
-            if (col == "MarcarPagado")
+            // Lógica para el botón "MarcarPagado"
+            if (colName == "MarcarPagado")
             {
-                string? metodo = Microsoft.VisualBasic.Interaction.InputBox(
-                    "Método de pago (Efectivo/Tarjeta/Transferencia/QR):",
-                    "Marcar Pagado", "Efectivo");
-                if (string.IsNullOrWhiteSpace(metodo)) return;
+                if (!activa || estado.Equals("Pagado", StringComparison.OrdinalIgnoreCase)) return;
 
-                try
-                {
-                    var est = (DataTable)cmbEstado.DataSource;
-                    int estadoPagadoId = est.AsEnumerable()
-                        .First(r => string.Equals(r.Field<string>("Nombre"), "Pagado", StringComparison.OrdinalIgnoreCase))
-                        .Field<int>("Id");
+                // Guardamos el ID de la reserva que estamos por editar
+                _idReservaEditando = id;
 
-                    ReservasService.SetEstado(id, estadoPagadoId, metodo);
-                    CargarGrilla();
-                    DecorarBotones();
-                }
-                catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                // Obtenemos la posición de la celda "MetodoPago" para saber dónde ubicar el ComboBox
+                Rectangle cellRectangle = dgvReservas.GetCellDisplayRectangle(dgvReservas.Columns["MetodoPago"].Index, e.RowIndex, false);
+
+                // Movemos nuestro ComboBox fantasma a esa posición
+                cmbMetodoPagoGrid.Location = cellRectangle.Location;
+                cmbMetodoPagoGrid.Size = cellRectangle.Size;
+
+                // Lo hacemos visible, lo traemos al frente y lo desplegamos
+                cmbMetodoPagoGrid.Visible = true;
+                cmbMetodoPagoGrid.BringToFront();
+                cmbMetodoPagoGrid.Focus();
+                cmbMetodoPagoGrid.DroppedDown = true;
             }
-
-            if (col == "Cancelar")
+            // Lógica para el botón "Cancelar" (sin cambios)
+            else if (colName == "Cancelar")
             {
-                if (MessageBox.Show("¿Cancelar esta reserva?", "Confirmar",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (!activa) return;
+
+                if (MessageBox.Show("¿Cancelar esta reserva?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     try
                     {
                         ReservasService.Cancelar(id);
                         CargarGrilla();
                         RefrescarHorarios();
-                        DecorarBotones();
                     }
                     catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
                 }
             }
+        }
+
+        // CAMBIO: Nuevo método que se ejecuta cuando el usuario selecciona un item del ComboBox
+        private void cmbMetodoPagoGrid_SelectionChangeCommitted(object? sender, EventArgs e)
+        {
+            // Si no hay item seleccionado o no estamos editando ninguna reserva, no hacemos nada
+            if (cmbMetodoPagoGrid.SelectedItem == null || _idReservaEditando == -1) return;
+
+            string metodo = cmbMetodoPagoGrid.SelectedItem.ToString()!;
+
+            try
+            {
+                // Obtenemos el ID del estado "Pagado"
+                var est = (DataTable)cmbEstado.DataSource;
+                int estadoPagadoId = est.AsEnumerable()
+                    .First(r => string.Equals(r.Field<string>("Nombre"), "Pagado", StringComparison.OrdinalIgnoreCase))
+                    .Field<int>("Id");
+
+                // Llamamos al servicio para actualizar el estado y el método de pago
+                ReservasService.SetEstado(_idReservaEditando, estadoPagadoId, metodo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al actualizar la reserva: " + ex.Message);
+            }
+            finally
+            {
+                // Ocultamos el ComboBox y recargamos la grilla para ver el cambio
+                OcultarComboBoxGrid();
+                CargarGrilla();
+            }
+        }
+
+        // CAMBIO: Nuevo método para ocultar el ComboBox y limpiar la variable de estado
+        private void OcultarComboBoxGrid()
+        {
+            _idReservaEditando = -1;
+            cmbMetodoPagoGrid.Visible = false;
         }
 
         private void DecorarBotones()
@@ -367,34 +369,30 @@ namespace GestionCanchasDesktop
             foreach (DataGridViewRow row in dgvReservas.Rows)
             {
                 string estado = Convert.ToString(row.Cells["Estado"].Value) ?? "";
-                bool activa = row.Cells["Activa"] is DataGridViewCheckBoxCell cb && cb.Value is bool b && b;
+                bool activa = row.Cells["Activa"].Value as bool? ?? false;
 
-                var btnPagar = row.Cells["MarcarPagado"] as DataGridViewButtonCell;
-                var btnCanc = row.Cells["Cancelar"] as DataGridViewButtonCell;
-
-                if (btnPagar != null)
+                if (row.Cells["MarcarPagado"] is DataGridViewButtonCell btnPagar)
                 {
                     bool deshabilitar = !activa || estado.Equals("Pagado", StringComparison.OrdinalIgnoreCase);
                     btnPagar.ReadOnly = deshabilitar;
                     btnPagar.FlatStyle = FlatStyle.Standard;
-                    btnPagar.Style.ForeColor = deshabilitar ? System.Drawing.Color.Gray : System.Drawing.Color.Black;
+                    btnPagar.Style.ForeColor = deshabilitar ? Color.Gray : Color.Black;
                     btnPagar.Style.SelectionForeColor = btnPagar.Style.ForeColor;
-                    btnPagar.Value = deshabilitar ? "Pagado" : "Marcar pagado";
+                    btnPagar.Value = deshabilitar ? "—" : "Marcar pagado";
                 }
 
-                if (btnCanc != null)
+                if (row.Cells["Cancelar"] is DataGridViewButtonCell btnCanc)
                 {
                     bool deshabilitar = !activa;
                     btnCanc.ReadOnly = deshabilitar;
                     btnCanc.FlatStyle = FlatStyle.Standard;
-                    btnCanc.Style.ForeColor = deshabilitar ? System.Drawing.Color.Gray : System.Drawing.Color.Black;
+                    btnCanc.Style.ForeColor = deshabilitar ? Color.Gray : Color.Black;
                     btnCanc.Style.SelectionForeColor = btnCanc.Style.ForeColor;
                     btnCanc.Value = deshabilitar ? "—" : "Cancelar";
                 }
             }
         }
 
-        // (por si el Designer dejó enganchado CellContentClick)
         private void dgvReservas_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             dgvReservas_CellClick(sender, e);

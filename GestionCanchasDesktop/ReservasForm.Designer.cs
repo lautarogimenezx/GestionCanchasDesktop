@@ -29,6 +29,16 @@
         private void InitializeComponent()
         {
             gbReservas = new GroupBox();
+            cmbMetodoPagoGrid = new ComboBox();
+            btnLimpiar = new Button();
+            btnGuardar = new Button();
+            label9 = new Label();
+            label8 = new Label();
+            label7 = new Label();
+            cmbJugador = new ComboBox();
+            cmbEstado = new ComboBox();
+            label6 = new Label();
+            label5 = new Label();
             label4 = new Label();
             dtpFecha = new DateTimePicker();
             numDuracion = new NumericUpDown();
@@ -38,16 +48,6 @@
             cmbHorario = new ComboBox();
             cmbMetodoPago = new ComboBox();
             cmbCancha = new ComboBox();
-            label5 = new Label();
-            label6 = new Label();
-            cmbEstado = new ComboBox();
-            cmbJugador = new ComboBox();
-            label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
-            btnGuardar = new Button();
-            btnCancelar = new Button();
-            btnLimpiar = new Button();
             dgvReservas = new DataGridView();
             gbReservas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numDuracion).BeginInit();
@@ -56,8 +56,8 @@
             // 
             // gbReservas
             // 
+            gbReservas.Controls.Add(cmbMetodoPagoGrid);
             gbReservas.Controls.Add(btnLimpiar);
-            gbReservas.Controls.Add(btnCancelar);
             gbReservas.Controls.Add(btnGuardar);
             gbReservas.Controls.Add(label9);
             gbReservas.Controls.Add(label8);
@@ -83,6 +83,97 @@
             gbReservas.TabStop = false;
             gbReservas.Text = "Reservas";
             // 
+            // cmbMetodoPagoGrid
+            // 
+            cmbMetodoPagoGrid.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbMetodoPagoGrid.FormattingEnabled = true;
+            cmbMetodoPagoGrid.Location = new Point(602, 174);
+            cmbMetodoPagoGrid.Name = "cmbMetodoPagoGrid";
+            cmbMetodoPagoGrid.Size = new Size(121, 23);
+            cmbMetodoPagoGrid.TabIndex = 19;
+            cmbMetodoPagoGrid.Visible = false;
+            // 
+            // btnLimpiar
+            // 
+            btnLimpiar.Location = new Point(342, 173);
+            btnLimpiar.Name = "btnLimpiar";
+            btnLimpiar.Size = new Size(75, 23);
+            btnLimpiar.TabIndex = 18;
+            btnLimpiar.Text = "Limpiar";
+            btnLimpiar.UseVisualStyleBackColor = true;
+            // 
+            // btnGuardar
+            // 
+            btnGuardar.Location = new Point(242, 171);
+            btnGuardar.Name = "btnGuardar";
+            btnGuardar.Size = new Size(75, 23);
+            btnGuardar.TabIndex = 16;
+            btnGuardar.Text = "Guardar";
+            btnGuardar.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(412, 111);
+            label9.Name = "label9";
+            label9.Size = new Size(95, 15);
+            label9.TabIndex = 15;
+            label9.Text = "Metodo de Pago";
+            // 
+            // label8
+            // 
+            label8.AutoSize = true;
+            label8.Location = new Point(465, 82);
+            label8.Name = "label8";
+            label8.Size = new Size(42, 15);
+            label8.TabIndex = 14;
+            label8.Text = "Estado";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(458, 52);
+            label7.Name = "label7";
+            label7.Size = new Size(49, 15);
+            label7.TabIndex = 13;
+            label7.Text = "Jugador";
+            // 
+            // cmbJugador
+            // 
+            cmbJugador.FormattingEnabled = true;
+            cmbJugador.Location = new Point(525, 49);
+            cmbJugador.Name = "cmbJugador";
+            cmbJugador.Size = new Size(121, 23);
+            cmbJugador.TabIndex = 12;
+            // 
+            // cmbEstado
+            // 
+            cmbEstado.FormattingEnabled = true;
+            cmbEstado.Location = new Point(525, 78);
+            cmbEstado.Name = "cmbEstado";
+            cmbEstado.Size = new Size(121, 23);
+            cmbEstado.TabIndex = 11;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label6.Location = new Point(487, 19);
+            label6.Name = "label6";
+            label6.Size = new Size(124, 15);
+            label6.TabIndex = 10;
+            label6.Text = "Selección de Jugador";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label5.Location = new Point(85, 19);
+            label5.Name = "label5";
+            label5.Size = new Size(119, 15);
+            label5.TabIndex = 9;
+            label5.Text = "Selección de Cancha";
+            // 
             // label4
             // 
             label4.AutoSize = true;
@@ -101,14 +192,13 @@
             // 
             // numDuracion
             // 
-            numDuracion.Increment = new decimal(new int[] { 30, 0, 0, 0 });
             numDuracion.Location = new Point(117, 140);
-            numDuracion.Maximum = new decimal(new int[] { 480, 0, 0, 0 });
-            numDuracion.Minimum = new decimal(new int[] { 30, 0, 0, 0 });
+            numDuracion.Maximum = new decimal(new int[] { 8, 0, 0, 0 });
+            numDuracion.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numDuracion.Name = "numDuracion";
             numDuracion.Size = new Size(120, 23);
             numDuracion.TabIndex = 6;
-            numDuracion.Value = new decimal(new int[] { 30, 0, 0, 0 });
+            numDuracion.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // label3
             // 
@@ -161,96 +251,6 @@
             cmbCancha.Size = new Size(121, 23);
             cmbCancha.TabIndex = 0;
             // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label5.Location = new Point(85, 19);
-            label5.Name = "label5";
-            label5.Size = new Size(119, 15);
-            label5.TabIndex = 9;
-            label5.Text = "Selección de Cancha";
-            // 
-            // label6
-            // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label6.Location = new Point(487, 19);
-            label6.Name = "label6";
-            label6.Size = new Size(124, 15);
-            label6.TabIndex = 10;
-            label6.Text = "Selección de Jugador";
-            // 
-            // cmbEstado
-            // 
-            cmbEstado.FormattingEnabled = true;
-            cmbEstado.Location = new Point(525, 78);
-            cmbEstado.Name = "cmbEstado";
-            cmbEstado.Size = new Size(121, 23);
-            cmbEstado.TabIndex = 11;
-            // 
-            // cmbJugador
-            // 
-            cmbJugador.FormattingEnabled = true;
-            cmbJugador.Location = new Point(525, 49);
-            cmbJugador.Name = "cmbJugador";
-            cmbJugador.Size = new Size(121, 23);
-            cmbJugador.TabIndex = 12;
-            // 
-            // label7
-            // 
-            label7.AutoSize = true;
-            label7.Location = new Point(458, 52);
-            label7.Name = "label7";
-            label7.Size = new Size(49, 15);
-            label7.TabIndex = 13;
-            label7.Text = "Jugador";
-            // 
-            // label8
-            // 
-            label8.AutoSize = true;
-            label8.Location = new Point(465, 82);
-            label8.Name = "label8";
-            label8.Size = new Size(42, 15);
-            label8.TabIndex = 14;
-            label8.Text = "Estado";
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(412, 111);
-            label9.Name = "label9";
-            label9.Size = new Size(95, 15);
-            label9.TabIndex = 15;
-            label9.Text = "Metodo de Pago";
-            // 
-            // btnGuardar
-            // 
-            btnGuardar.Location = new Point(242, 171);
-            btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(75, 23);
-            btnGuardar.TabIndex = 16;
-            btnGuardar.Text = "Guardar";
-            btnGuardar.UseVisualStyleBackColor = true;
-            // 
-            // btnCancelar
-            // 
-            btnCancelar.Location = new Point(467, 171);
-            btnCancelar.Name = "btnCancelar";
-            btnCancelar.Size = new Size(75, 23);
-            btnCancelar.TabIndex = 17;
-            btnCancelar.Text = "Cancelar";
-            btnCancelar.UseVisualStyleBackColor = true;
-            // 
-            // btnLimpiar
-            // 
-            btnLimpiar.Location = new Point(355, 171);
-            btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(75, 23);
-            btnLimpiar.TabIndex = 18;
-            btnLimpiar.Text = "Limpiar";
-            btnLimpiar.UseVisualStyleBackColor = true;
-            // 
             // dgvReservas
             // 
             dgvReservas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -259,8 +259,7 @@
             dgvReservas.Name = "dgvReservas";
             dgvReservas.Size = new Size(800, 241);
             dgvReservas.TabIndex = 1;
-            this.dgvReservas.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvReservas_CellClick);
-
+            dgvReservas.CellClick += dgvReservas_CellClick;
             // 
             // ReservasForm
             // 
@@ -293,7 +292,6 @@
         private Label label6;
         private Label label5;
         private Button btnLimpiar;
-        private Button btnCancelar;
         private Button btnGuardar;
         private Label label9;
         private Label label8;
@@ -301,5 +299,6 @@
         private ComboBox cmbJugador;
         private ComboBox cmbEstado;
         private DataGridView dgvReservas;
+        private ComboBox cmbMetodoPagoGrid;
     }
 }
