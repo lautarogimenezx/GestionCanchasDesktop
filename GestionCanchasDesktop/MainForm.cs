@@ -94,15 +94,15 @@ namespace GestionCanchasDesktop
         private void btnReservas_Click(object sender, EventArgs e)
         {
             if (!btnReservas.Enabled) return;
-            // canchero/admin crean reservas -> pasamos el id de usuario logueado como "cancheroId"
+         
             CargarEnPanel(new ReservasForm(_userId));
         }
 
         private void btnReportes_Click(object sender, EventArgs e)
         {
             if (!btnReportes.Enabled) return;
-            // TODO: CargarEnPanel(new ReportesForm());
-            MessageBox.Show("La vista de Reportes aún no está implementada.");
+            CargarEnPanel(new ReportesForm());
+            
         }
 
         private void btnBackup_Click(object sender, EventArgs e)

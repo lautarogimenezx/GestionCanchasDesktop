@@ -150,6 +150,7 @@
             btnReportes.TabIndex = 8;
             btnReportes.Text = "Reportes";
             btnReportes.UseVisualStyleBackColor = true;
+            btnReportes.Click += btnReportes_Click;
             // 
             // btnReservas
             // 
