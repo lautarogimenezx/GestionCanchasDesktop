@@ -108,8 +108,8 @@ namespace GestionCanchasDesktop
         private void btnBackup_Click(object sender, EventArgs e)
         {
             if (!btnBackup.Enabled) return;
-            // TODO: CargarEnPanel(new BackupForm());
-            MessageBox.Show("La vista de Backup aún no está implementada.");
+           CargarEnPanel(new BackupForm());
+          
         }
 
         private void btnSalir_Click(object sender, EventArgs e)

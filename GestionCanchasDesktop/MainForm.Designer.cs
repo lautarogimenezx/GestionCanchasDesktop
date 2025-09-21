@@ -137,6 +137,7 @@
             btnBackup.TabIndex = 9;
             btnBackup.Text = "Backup";
             btnBackup.UseVisualStyleBackColor = true;
+            btnBackup.Click += btnBackup_Click;
             // 
             // btnReportes
             // 
