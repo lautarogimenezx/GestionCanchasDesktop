@@ -62,8 +62,10 @@
             gbEdicion.Controls.Add(txtNombre);
             gbEdicion.Dock = DockStyle.Top;
             gbEdicion.Location = new Point(0, 0);
+            gbEdicion.Margin = new Padding(3, 2, 3, 2);
             gbEdicion.Name = "gbEdicion";
-            gbEdicion.Size = new Size(800, 218);
+            gbEdicion.Padding = new Padding(3, 2, 3, 2);
+            gbEdicion.Size = new Size(700, 164);
             gbEdicion.TabIndex = 0;
             gbEdicion.TabStop = false;
             gbEdicion.Text = "Alta / Edicion de Jugador";
@@ -71,19 +73,22 @@
             // btnCancelar
             // 
             btnCancelar.FlatStyle = FlatStyle.Flat;
-            btnCancelar.Location = new Point(365, 116);
+            btnCancelar.Location = new Point(319, 87);
+            btnCancelar.Margin = new Padding(3, 2, 3, 2);
             btnCancelar.Name = "btnCancelar";
-            btnCancelar.Size = new Size(120, 34);
+            btnCancelar.Size = new Size(105, 26);
             btnCancelar.TabIndex = 8;
             btnCancelar.Text = "Cancelar";
             btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click_1;
             // 
             // btnLimpiar
             // 
             btnLimpiar.FlatStyle = FlatStyle.Flat;
-            btnLimpiar.Location = new Point(365, 76);
+            btnLimpiar.Location = new Point(319, 57);
+            btnLimpiar.Margin = new Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(120, 34);
+            btnLimpiar.Size = new Size(105, 26);
             btnLimpiar.TabIndex = 7;
             btnLimpiar.Text = "Limpiar";
             btnLimpiar.UseVisualStyleBackColor = true;
@@ -91,9 +96,10 @@
             // btnGuardar
             // 
             btnGuardar.FlatStyle = FlatStyle.Flat;
-            btnGuardar.Location = new Point(365, 36);
+            btnGuardar.Location = new Point(319, 27);
+            btnGuardar.Margin = new Padding(3, 2, 3, 2);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(120, 34);
+            btnGuardar.Size = new Size(105, 26);
             btnGuardar.TabIndex = 6;
             btnGuardar.Text = "Guardar";
             btnGuardar.UseVisualStyleBackColor = true;
@@ -101,52 +107,55 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(29, 144);
+            label3.Location = new Point(25, 108);
             label3.Name = "label3";
-            label3.Size = new Size(67, 20);
+            label3.Size = new Size(52, 15);
             label3.TabIndex = 5;
             label3.Text = "Telefono";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(29, 95);
+            label2.Location = new Point(25, 71);
             label2.Name = "label2";
-            label2.Size = new Size(66, 20);
+            label2.Size = new Size(51, 15);
             label2.TabIndex = 4;
             label2.Text = "Apellido";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(29, 43);
+            label1.Location = new Point(25, 32);
             label1.Name = "label1";
-            label1.Size = new Size(64, 20);
+            label1.Size = new Size(51, 15);
             label1.TabIndex = 3;
             label1.Text = "Nombre";
             // 
             // txtTelefono
             // 
-            txtTelefono.Location = new Point(144, 137);
+            txtTelefono.Location = new Point(126, 103);
+            txtTelefono.Margin = new Padding(3, 2, 3, 2);
             txtTelefono.Name = "txtTelefono";
             txtTelefono.PlaceholderText = "Ej: 3794-123456";
-            txtTelefono.Size = new Size(170, 27);
+            txtTelefono.Size = new Size(149, 23);
             txtTelefono.TabIndex = 2;
             // 
             // txtApellido
             // 
-            txtApellido.Location = new Point(144, 88);
+            txtApellido.Location = new Point(126, 66);
+            txtApellido.Margin = new Padding(3, 2, 3, 2);
             txtApellido.Name = "txtApellido";
             txtApellido.PlaceholderText = "Apellido";
-            txtApellido.Size = new Size(170, 27);
+            txtApellido.Size = new Size(149, 23);
             txtApellido.TabIndex = 1;
             // 
             // txtNombre
             // 
-            txtNombre.Location = new Point(144, 40);
+            txtNombre.Location = new Point(126, 30);
+            txtNombre.Margin = new Padding(3, 2, 3, 2);
             txtNombre.Name = "txtNombre";
             txtNombre.PlaceholderText = "Nombre";
-            txtNombre.Size = new Size(170, 27);
+            txtNombre.Size = new Size(149, 23);
             txtNombre.TabIndex = 0;
             // 
             // dgvJugadores
@@ -159,12 +168,13 @@
             dgvJugadores.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvJugadores.Columns.AddRange(new DataGridViewColumn[] { Id, Nombre, Apellido, Telefono, Editar, Eliminar });
             dgvJugadores.Dock = DockStyle.Fill;
-            dgvJugadores.Location = new Point(0, 218);
+            dgvJugadores.Location = new Point(0, 164);
+            dgvJugadores.Margin = new Padding(3, 2, 3, 2);
             dgvJugadores.Name = "dgvJugadores";
             dgvJugadores.ReadOnly = true;
             dgvJugadores.RowHeadersVisible = false;
             dgvJugadores.RowHeadersWidth = 51;
-            dgvJugadores.Size = new Size(800, 303);
+            dgvJugadores.Size = new Size(700, 227);
             dgvJugadores.TabIndex = 1;
             // 
             // Id
@@ -213,11 +223,12 @@
             // 
             // JugadoresForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 521);
+            ClientSize = new Size(700, 391);
             Controls.Add(dgvJugadores);
             Controls.Add(gbEdicion);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "JugadoresForm";
             Text = "JugadoresForm";
             Load += JugadoresForm_Load;

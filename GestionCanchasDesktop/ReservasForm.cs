@@ -27,7 +27,7 @@ namespace GestionCanchasDesktop
             this.Load += ReservasForm_Load;
             btnGuardar.Click += btnGuardar_Click;
             btnLimpiar.Click += (_, __) => LimpiarForm();
-           
+
             dgvReservas.CellClick += dgvReservas_CellClick;
             dgvReservas.DataBindingComplete += (_, __) => DecorarBotones();
             cmbCancha.SelectedIndexChanged += (_, __) => RefrescarHorarios();
@@ -276,7 +276,7 @@ namespace GestionCanchasDesktop
             }
         }
 
-        // CAMBIO: La lógica para marcar pagado ahora es diferente.
+        
         private void dgvReservas_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
@@ -326,7 +326,7 @@ namespace GestionCanchasDesktop
             }
         }
 
-        // CAMBIO: Nuevo método que se ejecuta cuando el usuario selecciona un item del ComboBox
+        
         private void cmbMetodoPagoGrid_SelectionChangeCommitted(object? sender, EventArgs e)
         {
             // Si no hay item seleccionado o no estamos editando ninguna reserva, no hacemos nada
@@ -357,7 +357,7 @@ namespace GestionCanchasDesktop
             }
         }
 
-        // CAMBIO: Nuevo método para ocultar el ComboBox y limpiar la variable de estado
+      
         private void OcultarComboBoxGrid()
         {
             _idReservaEditando = -1;
@@ -396,6 +396,11 @@ namespace GestionCanchasDesktop
         private void dgvReservas_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
             dgvReservas_CellClick(sender, e);
+        }
+
+        private void cmbHorario_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

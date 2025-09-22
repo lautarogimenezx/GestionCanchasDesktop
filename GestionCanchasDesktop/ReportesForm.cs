@@ -30,7 +30,7 @@ namespace GestionCanchasDesktop
 
                 dgvReportes.DataSource = dt;
 
-                // 👉 Mostrar siempre 2 decimales en columnas numéricas
+                // Mostrar siempre 2 decimales en columnas numéricas
                 foreach (DataGridViewColumn col in dgvReportes.Columns)
                 {
                     if (col.ValueType == typeof(decimal) ||

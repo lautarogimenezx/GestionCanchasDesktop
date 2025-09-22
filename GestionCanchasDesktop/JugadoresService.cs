@@ -7,7 +7,7 @@ namespace GestionCanchasDesktop
 {
     internal static class JugadoresService
     {
-        // === Conexión (idéntico a AuthService.GetCs) ===
+        // === Conexión
         private static string GetCs()
         {
             var config = new ConfigurationBuilder()
@@ -80,7 +80,7 @@ WHERE Id=@Id;";
             cmd.ExecuteNonQuery();
         }
 
-        // (Opcional) Borrado real — cuidado con FK de Reservas
+        // (Borrado real)
         public static void BorrarDefinitivo(int id)
         {
             try

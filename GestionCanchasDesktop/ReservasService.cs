@@ -89,7 +89,7 @@ ORDER BY r.Inicio DESC;";
 
         // ===================== Disponibilidad =====================
 
-        // Trae reservas del día (rango por fecha; usa índice)
+        // Trae reservas del día
         public static List<(DateTime inicio, int durMin)> GetReservasDeCanchaPorDia(int canchaId, DateTime fechaDia)
         {
             var lista = new List<(DateTime, int)>();
@@ -117,7 +117,7 @@ WHERE r.CanchaId = @CanchaId
             return lista;
         }
 
-        // (opcional) Genera horarios libres - lo dejo por si lo usás en otra vista
+        
         public static List<DateTime> GetHorariosDisponibles(
             int canchaId, DateTime fechaDia, int duracionMin,
             TimeSpan horaApertura, TimeSpan horaCierre, int pasoMin = 30)

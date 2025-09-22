@@ -13,7 +13,7 @@ namespace GestionCanchasDesktop
         {
             InitializeComponent();
 
-            // Si los eventos ya están en el Designer, podés omitir.
+            
             this.Load += JugadoresForm_Load;
             btnGuardar.Click += btnGuardar_Click;
             btnLimpiar.Click += btnLimpiar_Click;
@@ -73,7 +73,7 @@ namespace GestionCanchasDesktop
         {
             if (string.IsNullOrWhiteSpace(txtNombre.Text)) { MessageBox.Show("Nombre requerido"); return false; }
             if (string.IsNullOrWhiteSpace(txtApellido.Text)) { MessageBox.Show("Apellido requerido"); return false; }
-            // Teléfono opcional: si querés validarlo, agregá un regex acá.
+
             return true;
         }
 
@@ -154,6 +154,11 @@ namespace GestionCanchasDesktop
                     }
                 }
             }
+        }
+
+        private void btnCancelar_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

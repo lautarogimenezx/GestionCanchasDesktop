@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             gbEdicion = new GroupBox();
+            chkActivo = new CheckBox();
             btnCancelar = new Button();
             btnLimpiar = new Button();
             btnGuardar = new Button();
@@ -51,7 +52,6 @@
             Estado = new DataGridViewTextBoxColumn();
             Editar = new DataGridViewButtonColumn();
             Baja_Alta = new DataGridViewButtonColumn();
-            chkActivo = new CheckBox();
             gbEdicion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvUsuarios).BeginInit();
             SuspendLayout();
@@ -74,19 +74,33 @@
             gbEdicion.Controls.Add(txtNombre);
             gbEdicion.Dock = DockStyle.Top;
             gbEdicion.Location = new Point(0, 0);
+            gbEdicion.Margin = new Padding(3, 2, 3, 2);
             gbEdicion.Name = "gbEdicion";
-            gbEdicion.Size = new Size(800, 214);
+            gbEdicion.Padding = new Padding(3, 2, 3, 2);
+            gbEdicion.Size = new Size(700, 160);
             gbEdicion.TabIndex = 0;
             gbEdicion.TabStop = false;
             gbEdicion.Tag = "";
             gbEdicion.Text = "Alta / Edición de usuario";
             // 
+            // chkActivo
+            // 
+            chkActivo.AutoSize = true;
+            chkActivo.Location = new Point(292, 128);
+            chkActivo.Margin = new Padding(3, 2, 3, 2);
+            chkActivo.Name = "chkActivo";
+            chkActivo.Size = new Size(113, 19);
+            chkActivo.TabIndex = 15;
+            chkActivo.Text = "Activo / Inactivo";
+            chkActivo.UseVisualStyleBackColor = true;
+            // 
             // btnCancelar
             // 
             btnCancelar.FlatStyle = FlatStyle.Flat;
-            btnCancelar.Location = new Point(345, 118);
+            btnCancelar.Location = new Point(302, 88);
+            btnCancelar.Margin = new Padding(3, 2, 3, 2);
             btnCancelar.Name = "btnCancelar";
-            btnCancelar.Size = new Size(110, 34);
+            btnCancelar.Size = new Size(96, 26);
             btnCancelar.TabIndex = 13;
             btnCancelar.Text = "Cancelar";
             btnCancelar.UseVisualStyleBackColor = true;
@@ -94,19 +108,22 @@
             // btnLimpiar
             // 
             btnLimpiar.FlatStyle = FlatStyle.Flat;
-            btnLimpiar.Location = new Point(345, 76);
+            btnLimpiar.Location = new Point(302, 57);
+            btnLimpiar.Margin = new Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(110, 34);
+            btnLimpiar.Size = new Size(96, 26);
             btnLimpiar.TabIndex = 12;
             btnLimpiar.Text = "Limpiar";
             btnLimpiar.UseVisualStyleBackColor = true;
+            btnLimpiar.Click += btnLimpiar_Click_1;
             // 
             // btnGuardar
             // 
             btnGuardar.FlatStyle = FlatStyle.Flat;
-            btnGuardar.Location = new Point(345, 35);
+            btnGuardar.Location = new Point(302, 26);
+            btnGuardar.Margin = new Padding(3, 2, 3, 2);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(110, 34);
+            btnGuardar.Size = new Size(96, 26);
             btnGuardar.TabIndex = 11;
             btnGuardar.Text = "Guardar";
             btnGuardar.UseVisualStyleBackColor = true;
@@ -114,45 +131,45 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(22, 174);
+            label5.Location = new Point(19, 130);
             label5.Name = "label5";
-            label5.Size = new Size(31, 20);
+            label5.Size = new Size(24, 15);
             label5.TabIndex = 10;
             label5.Text = "Rol";
             // 
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(22, 137);
+            label4.Location = new Point(19, 103);
             label4.Name = "label4";
-            label4.Size = new Size(83, 20);
+            label4.Size = new Size(67, 15);
             label4.TabIndex = 9;
             label4.Text = "Contraseña";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(22, 104);
+            label3.Location = new Point(19, 78);
             label3.Name = "label3";
-            label3.Size = new Size(46, 20);
+            label3.Size = new Size(36, 15);
             label3.TabIndex = 8;
             label3.Text = "Email";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(22, 71);
+            label2.Location = new Point(19, 53);
             label2.Name = "label2";
-            label2.Size = new Size(66, 20);
+            label2.Size = new Size(51, 15);
             label2.TabIndex = 7;
             label2.Text = "Apellido";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(22, 35);
+            label1.Location = new Point(19, 26);
             label1.Name = "label1";
-            label1.Size = new Size(64, 20);
+            label1.Size = new Size(51, 15);
             label1.TabIndex = 6;
             label1.Text = "Nombre";
             // 
@@ -161,42 +178,47 @@
             cmbRol.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbRol.FormattingEnabled = true;
             cmbRol.Items.AddRange(new object[] { "Administrador", "Canchero", "Contador" });
-            cmbRol.Location = new Point(127, 171);
+            cmbRol.Location = new Point(111, 128);
+            cmbRol.Margin = new Padding(3, 2, 3, 2);
             cmbRol.Name = "cmbRol";
-            cmbRol.Size = new Size(151, 28);
+            cmbRol.Size = new Size(133, 23);
             cmbRol.TabIndex = 4;
             cmbRol.Tag = "";
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(127, 138);
+            txtPassword.Location = new Point(111, 104);
+            txtPassword.Margin = new Padding(3, 2, 3, 2);
             txtPassword.Name = "txtPassword";
             txtPassword.PlaceholderText = "Contraseña";
-            txtPassword.Size = new Size(170, 27);
+            txtPassword.Size = new Size(149, 23);
             txtPassword.TabIndex = 3;
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(127, 101);
+            txtEmail.Location = new Point(111, 76);
+            txtEmail.Margin = new Padding(3, 2, 3, 2);
             txtEmail.Name = "txtEmail";
             txtEmail.PlaceholderText = "Email";
-            txtEmail.Size = new Size(170, 27);
+            txtEmail.Size = new Size(149, 23);
             txtEmail.TabIndex = 2;
             // 
             // txtApellido
             // 
-            txtApellido.Location = new Point(127, 68);
+            txtApellido.Location = new Point(111, 51);
+            txtApellido.Margin = new Padding(3, 2, 3, 2);
             txtApellido.Name = "txtApellido";
             txtApellido.PlaceholderText = "Apellido";
-            txtApellido.Size = new Size(170, 27);
+            txtApellido.Size = new Size(149, 23);
             txtApellido.TabIndex = 1;
             // 
             // txtNombre
             // 
-            txtNombre.Location = new Point(127, 35);
+            txtNombre.Location = new Point(111, 26);
+            txtNombre.Margin = new Padding(3, 2, 3, 2);
             txtNombre.Name = "txtNombre";
             txtNombre.PlaceholderText = "Nombre";
-            txtNombre.Size = new Size(170, 27);
+            txtNombre.Size = new Size(149, 23);
             txtNombre.TabIndex = 0;
             // 
             // dgvUsuarios
@@ -207,12 +229,13 @@
             dgvUsuarios.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { Nombre, ID, Apellido, Email, Rol, Estado, Editar, Baja_Alta });
             dgvUsuarios.Dock = DockStyle.Fill;
-            dgvUsuarios.Location = new Point(0, 214);
+            dgvUsuarios.Location = new Point(0, 160);
+            dgvUsuarios.Margin = new Padding(3, 2, 3, 2);
             dgvUsuarios.Name = "dgvUsuarios";
             dgvUsuarios.ReadOnly = true;
             dgvUsuarios.RowHeadersWidth = 51;
             dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvUsuarios.Size = new Size(800, 307);
+            dgvUsuarios.Size = new Size(700, 231);
             dgvUsuarios.TabIndex = 1;
             // 
             // Nombre
@@ -274,23 +297,14 @@
             Baja_Alta.ReadOnly = true;
             Baja_Alta.UseColumnTextForButtonValue = true;
             // 
-            // chkActivo
-            // 
-            chkActivo.AutoSize = true;
-            chkActivo.Location = new Point(334, 170);
-            chkActivo.Name = "chkActivo";
-            chkActivo.Size = new Size(139, 24);
-            chkActivo.TabIndex = 15;
-            chkActivo.Text = "Activo / Inactivo";
-            chkActivo.UseVisualStyleBackColor = true;
-            // 
             // UsuariosForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 521);
+            ClientSize = new Size(700, 391);
             Controls.Add(dgvUsuarios);
             Controls.Add(gbEdicion);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "UsuariosForm";
             Text = "UsuariosForm";
             gbEdicion.ResumeLayout(false);

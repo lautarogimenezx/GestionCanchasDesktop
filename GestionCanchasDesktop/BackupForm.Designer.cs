@@ -38,6 +38,7 @@
             btnRestore.TabIndex = 1;
             btnRestore.Text = "Restaurar Backup";
             btnRestore.UseVisualStyleBackColor = true;
+            btnRestore.Click += btnRestore_Click_1;
             // 
             // BackupForm
             // 

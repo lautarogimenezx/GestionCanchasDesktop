@@ -59,7 +59,7 @@ namespace GestionCanchasDesktop
             lblError.ForeColor = Color.Red;
             lblError.Location = new Point(115, 169);
             lblError.Name = "lblError";
-            lblError.Size = new Size(273, 25);
+            lblError.Size = new Size(223, 20);
             lblError.TabIndex = 4;
             lblError.Text = "Usuario o contraseña invalidos";
             lblError.Visible = false;
@@ -80,9 +80,10 @@ namespace GestionCanchasDesktop
             txtContraseña.Location = new Point(75, 119);
             txtContraseña.Name = "txtContraseña";
             txtContraseña.PlaceholderText = "Ingrese su contraseña";
-            txtContraseña.Size = new Size(349, 31);
+            txtContraseña.Size = new Size(349, 27);
             txtContraseña.TabIndex = 2;
             txtContraseña.UseSystemPasswordChar = true;
+            txtContraseña.TextChanged += txtContraseña_TextChanged;
             // 
             // txtUsuario
             // 
@@ -90,7 +91,7 @@ namespace GestionCanchasDesktop
             txtUsuario.Location = new Point(75, 82);
             txtUsuario.Name = "txtUsuario";
             txtUsuario.PlaceholderText = "Ingrese su nombre de usuario";
-            txtUsuario.Size = new Size(349, 31);
+            txtUsuario.Size = new Size(349, 27);
             txtUsuario.TabIndex = 1;
             txtUsuario.TextChanged += txtUsuario_TextChanged;
             // 
@@ -100,14 +101,14 @@ namespace GestionCanchasDesktop
             label3.Font = new Font("Segoe UI", 19.8000011F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label3.Location = new Point(156, 13);
             label3.Name = "label3";
-            label3.Size = new Size(219, 46);
+            label3.Size = new Size(176, 37);
             label3.TabIndex = 0;
             label3.Text = "Inicia Sesión";
             // 
             // LoginForm
             // 
             AcceptButton = btnContinuar;
-            AutoScaleDimensions = new SizeF(11F, 25F);
+            AutoScaleDimensions = new SizeF(8F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
             ClientSize = new Size(582, 308);

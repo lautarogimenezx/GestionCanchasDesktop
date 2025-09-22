@@ -108,7 +108,7 @@ WHERE Id=@Id;", cn);
             cmd.ExecuteNonQuery();
         }
 
-        // (Opcional) borrado real: ojo con reservas ligadas
+        // (Opcional) borrado real
         public static void BorrarDefinitivo(int id)
         {
             try

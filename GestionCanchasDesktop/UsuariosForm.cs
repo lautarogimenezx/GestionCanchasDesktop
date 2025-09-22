@@ -29,14 +29,14 @@ namespace GestionCanchasDesktop
         // =========================================================
         private void UsuariosForm_Load(object? sender, EventArgs e)
         {
-            ConfigurarGrilla();   // 1) columnas y comportamiento (solo una vez)
+            ConfigurarGrilla();   // 1) columnas y comportamiento
             CargarRoles();        // 2) combo de roles
             CargarGrilla();       // 3) datos
             LimpiarForm();        // 4) limpiar campos
         }
 
         // =========================================================
-        // Configurar grilla (solo una vez) -> SIN duplicar columnas
+        // Configurar grilla 
         // =========================================================
         private void ConfigurarGrilla()
         {
@@ -114,7 +114,7 @@ namespace GestionCanchasDesktop
         }
 
         // =========================================================
-        // Cargar roles en el combo (ValueMember = Id / DisplayMember = Nombre)
+        // Cargar roles en el combo 
         // =========================================================
         private void CargarRoles()
         {
@@ -128,7 +128,7 @@ namespace GestionCanchasDesktop
         }
 
         // =========================================================
-        // Cargar datos en la grilla (solo setear DataSource, no tocar columnas)
+        // Cargar datos en la grilla 
         // =========================================================
         private void CargarGrilla()
         {
@@ -148,8 +148,8 @@ namespace GestionCanchasDesktop
             txtPassword.Clear();
             chkActivo.Checked = true;
             if (cmbRol.Items.Count > 0) cmbRol.SelectedIndex = 0;
-            _editandoId = null;                 // ← salir de edición
-            btnGuardar.Text = "Guardar";        // ← texto default
+            _editandoId = null;                 //  salir de edición
+            btnGuardar.Text = "Guardar";        //  texto default
             txtNombre.Focus();
         }
 
@@ -281,7 +281,7 @@ namespace GestionCanchasDesktop
                         AuthService.SetActivo(id, !activo);
                         CargarGrilla();
 
-                        // Si estabas editando justo este, salí de edición
+                        
                         if (_editandoId == id)
                         {
                             _editandoId = null;
@@ -297,5 +297,9 @@ namespace GestionCanchasDesktop
             }
         }
 
+        private void btnLimpiar_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }

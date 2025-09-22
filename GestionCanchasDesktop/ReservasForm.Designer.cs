@@ -234,6 +234,7 @@
             cmbHorario.Name = "cmbHorario";
             cmbHorario.Size = new Size(121, 23);
             cmbHorario.TabIndex = 2;
+            cmbHorario.SelectedIndexChanged += cmbHorario_SelectedIndexChanged_1;
             // 
             // cmbMetodoPago
             // 

@@ -60,8 +60,10 @@ namespace GestionCanchasDesktop
             gbEdicion.Controls.Add(txtNro);
             gbEdicion.Dock = DockStyle.Top;
             gbEdicion.Location = new Point(0, 0);
+            gbEdicion.Margin = new Padding(3, 2, 3, 2);
             gbEdicion.Name = "gbEdicion";
-            gbEdicion.Size = new Size(800, 214);
+            gbEdicion.Padding = new Padding(3, 2, 3, 2);
+            gbEdicion.Size = new Size(700, 160);
             gbEdicion.TabIndex = 1;
             gbEdicion.TabStop = false;
             gbEdicion.Text = "Alta / Edición de cancha";
@@ -71,9 +73,10 @@ namespace GestionCanchasDesktop
             chkActivo.AutoSize = true;
             chkActivo.Checked = true;
             chkActivo.CheckState = CheckState.Checked;
-            chkActivo.Location = new Point(334, 170);
+            chkActivo.Location = new Point(292, 128);
+            chkActivo.Margin = new Padding(3, 2, 3, 2);
             chkActivo.Name = "chkActivo";
-            chkActivo.Size = new Size(139, 24);
+            chkActivo.Size = new Size(113, 19);
             chkActivo.TabIndex = 15;
             chkActivo.Text = "Activo / Inactivo";
             chkActivo.UseVisualStyleBackColor = true;
@@ -81,19 +84,22 @@ namespace GestionCanchasDesktop
             // btnCancelar
             // 
             btnCancelar.FlatStyle = FlatStyle.Flat;
-            btnCancelar.Location = new Point(345, 118);
+            btnCancelar.Location = new Point(302, 88);
+            btnCancelar.Margin = new Padding(3, 2, 3, 2);
             btnCancelar.Name = "btnCancelar";
-            btnCancelar.Size = new Size(110, 34);
+            btnCancelar.Size = new Size(96, 26);
             btnCancelar.TabIndex = 13;
             btnCancelar.Text = "Cancelar";
             btnCancelar.UseVisualStyleBackColor = true;
+            btnCancelar.Click += btnCancelar_Click_1;
             // 
             // btnLimpiar
             // 
             btnLimpiar.FlatStyle = FlatStyle.Flat;
-            btnLimpiar.Location = new Point(345, 76);
+            btnLimpiar.Location = new Point(302, 57);
+            btnLimpiar.Margin = new Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(110, 34);
+            btnLimpiar.Size = new Size(96, 26);
             btnLimpiar.TabIndex = 12;
             btnLimpiar.Text = "Limpiar";
             btnLimpiar.UseVisualStyleBackColor = true;
@@ -101,9 +107,10 @@ namespace GestionCanchasDesktop
             // btnGuardar
             // 
             btnGuardar.FlatStyle = FlatStyle.Flat;
-            btnGuardar.Location = new Point(345, 35);
+            btnGuardar.Location = new Point(302, 26);
+            btnGuardar.Margin = new Padding(3, 2, 3, 2);
             btnGuardar.Name = "btnGuardar";
-            btnGuardar.Size = new Size(110, 34);
+            btnGuardar.Size = new Size(96, 26);
             btnGuardar.TabIndex = 11;
             btnGuardar.Text = "Guardar";
             btnGuardar.UseVisualStyleBackColor = true;
@@ -111,36 +118,36 @@ namespace GestionCanchasDesktop
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(22, 156);
+            label4.Location = new Point(19, 117);
             label4.Name = "label4";
-            label4.Size = new Size(94, 20);
+            label4.Size = new Size(75, 15);
             label4.TabIndex = 9;
             label4.Text = "Precio / hora";
             // 
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(22, 118);
+            label3.Location = new Point(19, 88);
             label3.Name = "label3";
-            label3.Size = new Size(75, 20);
+            label3.Size = new Size(60, 15);
             label3.TabIndex = 8;
             label3.Text = "Ubicación";
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(22, 76);
+            label2.Location = new Point(19, 57);
             label2.Name = "label2";
-            label2.Size = new Size(39, 20);
+            label2.Size = new Size(30, 15);
             label2.TabIndex = 7;
             label2.Text = "Tipo";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(22, 35);
+            label1.Location = new Point(19, 26);
             label1.Name = "label1";
-            label1.Size = new Size(63, 20);
+            label1.Size = new Size(51, 15);
             label1.TabIndex = 6;
             label1.Text = "Número";
             // 
@@ -149,33 +156,37 @@ namespace GestionCanchasDesktop
             cmbTipo.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbTipo.FormattingEnabled = true;
             cmbTipo.Items.AddRange(new object[] { "Fútbol 5", "Fútbol 7", "Fútbol 11", "Pádel", "Tenis", "Básquet", "Vóley" });
-            cmbTipo.Location = new Point(139, 71);
+            cmbTipo.Location = new Point(122, 53);
+            cmbTipo.Margin = new Padding(3, 2, 3, 2);
             cmbTipo.Name = "cmbTipo";
-            cmbTipo.Size = new Size(170, 28);
+            cmbTipo.Size = new Size(149, 23);
             cmbTipo.TabIndex = 4;
             // 
             // txtPrecio
             // 
-            txtPrecio.Location = new Point(139, 153);
+            txtPrecio.Location = new Point(122, 115);
+            txtPrecio.Margin = new Padding(3, 2, 3, 2);
             txtPrecio.Name = "txtPrecio";
             txtPrecio.PlaceholderText = "Precio";
-            txtPrecio.Size = new Size(170, 27);
+            txtPrecio.Size = new Size(149, 23);
             txtPrecio.TabIndex = 3;
             // 
             // txtUbicacion
             // 
-            txtUbicacion.Location = new Point(139, 111);
+            txtUbicacion.Location = new Point(122, 83);
+            txtUbicacion.Margin = new Padding(3, 2, 3, 2);
             txtUbicacion.Name = "txtUbicacion";
             txtUbicacion.PlaceholderText = "Ubicación";
-            txtUbicacion.Size = new Size(170, 27);
+            txtUbicacion.Size = new Size(149, 23);
             txtUbicacion.TabIndex = 2;
             // 
             // txtNro
             // 
-            txtNro.Location = new Point(139, 32);
+            txtNro.Location = new Point(122, 24);
+            txtNro.Margin = new Padding(3, 2, 3, 2);
             txtNro.Name = "txtNro";
             txtNro.PlaceholderText = "Número";
-            txtNro.Size = new Size(170, 27);
+            txtNro.Size = new Size(149, 23);
             txtNro.TabIndex = 0;
             // 
             // dgvCanchas
@@ -183,19 +194,21 @@ namespace GestionCanchasDesktop
             dgvCanchas.BackgroundColor = SystemColors.ControlLight;
             dgvCanchas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvCanchas.Dock = DockStyle.Bottom;
-            dgvCanchas.Location = new Point(0, 213);
+            dgvCanchas.Location = new Point(0, 160);
+            dgvCanchas.Margin = new Padding(3, 2, 3, 2);
             dgvCanchas.Name = "dgvCanchas";
             dgvCanchas.RowHeadersWidth = 51;
-            dgvCanchas.Size = new Size(800, 308);
+            dgvCanchas.Size = new Size(700, 231);
             dgvCanchas.TabIndex = 7;
             // 
             // CanchasForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 521);
+            ClientSize = new Size(700, 391);
             Controls.Add(dgvCanchas);
             Controls.Add(gbEdicion);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "CanchasForm";
             Text = "Canchas";
             gbEdicion.ResumeLayout(false);
