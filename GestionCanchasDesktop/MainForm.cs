@@ -21,7 +21,7 @@ namespace GestionCanchasDesktop
             this.Text = $"Gestión de Canchas - Bienvenido {nombre} ({rol})";
             lblUsuario.Text = $"{nombre} {apellido} ({rol})";
 
-            // ===== Permisos por rol (solo deshabilitar: quedan en gris) =====
+            // ===== Permisos por rol =====
             bool isAdmin = _rol.Equals("Administrador", StringComparison.OrdinalIgnoreCase);
             bool isCanchero = _rol.Equals("Canchero", StringComparison.OrdinalIgnoreCase);
             bool isContador = _rol.Equals("Contador", StringComparison.OrdinalIgnoreCase);
@@ -38,7 +38,7 @@ namespace GestionCanchasDesktop
 
             btnReportes.Enabled = isAdmin || isContador;
 
-            // (opcional) si querés que los deshabilitados no tomen foco con TAB:
+         
             btnUsuarios.TabStop = btnUsuarios.Enabled;
             btnCanchas.TabStop = btnCanchas.Enabled;
             btnBackup.TabStop = btnBackup.Enabled;
@@ -49,8 +49,7 @@ namespace GestionCanchasDesktop
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            // Podés cargar un dashboard por defecto si querés:
-            // CargarEnPanel(new DashboardForm());
+            
         }
 
         private void CargarEnPanel(Form formHijo)
@@ -75,7 +74,7 @@ namespace GestionCanchasDesktop
 
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
-            if (!btnUsuarios.Enabled) return;  // guard por si el diseñador quedó mal
+            if (!btnUsuarios.Enabled) return; 
             CargarEnPanel(new UsuariosForm());
         }
 
@@ -94,7 +93,7 @@ namespace GestionCanchasDesktop
         private void btnReservas_Click(object sender, EventArgs e)
         {
             if (!btnReservas.Enabled) return;
-         
+
             CargarEnPanel(new ReservasForm(_userId));
         }
 
@@ -102,14 +101,14 @@ namespace GestionCanchasDesktop
         {
             if (!btnReportes.Enabled) return;
             CargarEnPanel(new ReportesForm());
-            
+
         }
 
         private void btnBackup_Click(object sender, EventArgs e)
         {
             if (!btnBackup.Enabled) return;
-           CargarEnPanel(new BackupForm());
-          
+            CargarEnPanel(new BackupForm());
+
         }
 
         private void btnSalir_Click(object sender, EventArgs e)
@@ -119,7 +118,12 @@ namespace GestionCanchasDesktop
 
         private void panelTop_Paint(object sender, PaintEventArgs e)
         {
-            // opcional
+            
+        }
+
+        private void panelContenido_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

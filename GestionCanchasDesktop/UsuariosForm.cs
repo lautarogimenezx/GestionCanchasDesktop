@@ -8,7 +8,7 @@ namespace GestionCanchasDesktop
     public partial class UsuariosForm : Form
     {
         private bool _gridConfigurada = false;
-        private Form? _formActual; // si lo usás para cargar subforms; no es crítico acá
+        private Form? _formActual; 
         private int? _editandoId = null;
 
 
@@ -16,7 +16,7 @@ namespace GestionCanchasDesktop
         {
             InitializeComponent();
 
-            // Si estos eventos ya están conectados en el Designer, podés comentar estas líneas.
+            
             this.Load += UsuariosForm_Load;
             btnGuardar.Click += btnGuardar_Click;
             btnLimpiar.Click += btnLimpiar_Click;
