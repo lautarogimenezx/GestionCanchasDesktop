@@ -38,7 +38,7 @@ namespace GestionCanchasDesktop
 
             btnReportes.Enabled = isAdmin || isContador;
 
-         
+
             btnUsuarios.TabStop = btnUsuarios.Enabled;
             btnCanchas.TabStop = btnCanchas.Enabled;
             btnBackup.TabStop = btnBackup.Enabled;
@@ -49,7 +49,7 @@ namespace GestionCanchasDesktop
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            
+
         }
 
         private void CargarEnPanel(Form formHijo)
@@ -74,7 +74,7 @@ namespace GestionCanchasDesktop
 
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
-            if (!btnUsuarios.Enabled) return; 
+            if (!btnUsuarios.Enabled) return;
             CargarEnPanel(new UsuariosForm());
         }
 
@@ -118,12 +118,40 @@ namespace GestionCanchasDesktop
 
         private void panelTop_Paint(object sender, PaintEventArgs e)
         {
-            
+
         }
 
         private void panelContenido_Paint(object sender, PaintEventArgs e)
         {
 
         }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "¿Seguro que desea cerrar sesión?",
+                "Cerrar sesión",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (result == DialogResult.Yes)
+            {
+                
+
+                this.Hide();
+                System.Threading.Thread t = new System.Threading.Thread(() =>
+                {
+                    Application.Run(new LoginForm());
+                });
+                t.SetApartmentState(System.Threading.ApartmentState.STA);
+                t.Start();
+
+                this.Close();
+            }
+        }
+
+
+
     }
 }

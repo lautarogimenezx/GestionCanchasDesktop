@@ -48,7 +48,7 @@
             // 
             // btnBuscar
             // 
-            btnBuscar.Location = new Point(600, 20);
+            btnBuscar.Location = new Point(608, 30);
             btnBuscar.Name = "btnBuscar";
             btnBuscar.Size = new Size(120, 30);
             btnBuscar.TabIndex = 5;
@@ -61,7 +61,7 @@
             dtpDesde.Location = new Point(20, 30);
             dtpDesde.Name = "dtpDesde";
             dtpDesde.ShowCheckBox = true;
-            dtpDesde.Size = new Size(200, 23);
+            dtpDesde.Size = new Size(200, 27);
             dtpDesde.TabIndex = 1;
             // 
             // dtpHasta
@@ -69,7 +69,7 @@
             dtpHasta.Location = new Point(240, 30);
             dtpHasta.Name = "dtpHasta";
             dtpHasta.ShowCheckBox = true;
-            dtpHasta.Size = new Size(200, 23);
+            dtpHasta.Size = new Size(200, 27);
             dtpHasta.TabIndex = 2;
             // 
             // cmbAgrupar
@@ -79,7 +79,7 @@
             cmbAgrupar.Items.AddRange(new object[] { "DIA", "SEMANA", "MES" });
             cmbAgrupar.Location = new Point(463, 30);
             cmbAgrupar.Name = "cmbAgrupar";
-            cmbAgrupar.Size = new Size(121, 23);
+            cmbAgrupar.Size = new Size(121, 28);
             cmbAgrupar.TabIndex = 3;
             // 
             // rbRecaudacion
@@ -87,7 +87,7 @@
             rbRecaudacion.AutoSize = true;
             rbRecaudacion.Location = new Point(34, 80);
             rbRecaudacion.Name = "rbRecaudacion";
-            rbRecaudacion.Size = new Size(93, 19);
+            rbRecaudacion.Size = new Size(115, 24);
             rbRecaudacion.TabIndex = 9;
             rbRecaudacion.TabStop = true;
             rbRecaudacion.Text = "Recaudación";
@@ -96,9 +96,9 @@
             // rbHorarios
             // 
             rbHorarios.AutoSize = true;
-            rbHorarios.Location = new Point(134, 80);
+            rbHorarios.Location = new Point(169, 80);
             rbHorarios.Name = "rbHorarios";
-            rbHorarios.Size = new Size(140, 19);
+            rbHorarios.Size = new Size(176, 24);
             rbHorarios.TabIndex = 10;
             rbHorarios.TabStop = true;
             rbHorarios.Text = "Horarios más pedidos";
@@ -107,9 +107,9 @@
             // rbCanchero
             // 
             rbCanchero.AutoSize = true;
-            rbCanchero.Location = new Point(274, 80);
+            rbCanchero.Location = new Point(361, 80);
             rbCanchero.Name = "rbCanchero";
-            rbCanchero.Size = new Size(97, 19);
+            rbCanchero.Size = new Size(119, 24);
             rbCanchero.TabIndex = 11;
             rbCanchero.TabStop = true;
             rbCanchero.Text = "Top canchero";
@@ -123,6 +123,7 @@
             dgvReportes.Location = new Point(12, 150);
             dgvReportes.Name = "dgvReportes";
             dgvReportes.ReadOnly = true;
+            dgvReportes.RowHeadersWidth = 51;
             dgvReportes.Size = new Size(760, 300);
             dgvReportes.TabIndex = 1;
             // 
