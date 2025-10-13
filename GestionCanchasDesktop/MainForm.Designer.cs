@@ -56,17 +56,18 @@
             panelTop.Controls.Add(label1);
             panelTop.Dock = DockStyle.Top;
             panelTop.Location = new Point(0, 0);
-            panelTop.Margin = new Padding(5, 4, 5, 4);
+            panelTop.Margin = new Padding(4, 3, 4, 3);
             panelTop.Name = "panelTop";
-            panelTop.Size = new Size(1182, 44);
+            panelTop.Size = new Size(1034, 33);
             panelTop.TabIndex = 1;
             panelTop.Paint += panelTop_Paint;
             // 
             // btnLogout
             // 
-            btnLogout.Location = new Point(1064, 9);
+            btnLogout.Location = new Point(931, 7);
+            btnLogout.Margin = new Padding(3, 2, 3, 2);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(106, 29);
+            btnLogout.Size = new Size(93, 22);
             btnLogout.TabIndex = 3;
             btnLogout.Text = "Cerrar sesión";
             btnLogout.UseVisualStyleBackColor = true;
@@ -75,9 +76,10 @@
             // pictureBox1
             // 
             pictureBox1.Image = Properties.Resources.logo;
-            pictureBox1.Location = new Point(3, 7);
+            pictureBox1.Location = new Point(3, 5);
+            pictureBox1.Margin = new Padding(3, 2, 3, 2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(40, 37);
+            pictureBox1.Size = new Size(35, 28);
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
@@ -86,9 +88,9 @@
             lblUsuario.AutoSize = true;
             lblUsuario.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblUsuario.ForeColor = Color.White;
-            lblUsuario.Location = new Point(752, 9);
+            lblUsuario.Location = new Point(658, 7);
             lblUsuario.Name = "lblUsuario";
-            lblUsuario.Size = new Size(0, 25);
+            lblUsuario.Size = new Size(0, 20);
             lblUsuario.TabIndex = 2;
             // 
             // label1
@@ -96,10 +98,10 @@
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(42, 9);
-            label1.Margin = new Padding(5, 0, 5, 0);
+            label1.Location = new Point(37, 7);
+            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(276, 25);
+            label1.Size = new Size(225, 20);
             label1.TabIndex = 0;
             label1.Text = "Gestion de Canchas Deportivas";
             // 
@@ -114,9 +116,10 @@
             panel1.Controls.Add(btnUsuarios);
             panel1.Controls.Add(btnJugadores);
             panel1.Dock = DockStyle.Left;
-            panel1.Location = new Point(0, 44);
+            panel1.Location = new Point(0, 33);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(334, 609);
+            panel1.Size = new Size(292, 457);
             panel1.TabIndex = 2;
             // 
             // btnSalir
@@ -124,9 +127,10 @@
             btnSalir.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnSalir.Image = Properties.Resources.salir;
             btnSalir.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSalir.Location = new Point(33, 514);
+            btnSalir.Location = new Point(29, 386);
+            btnSalir.Margin = new Padding(3, 2, 3, 2);
             btnSalir.Name = "btnSalir";
-            btnSalir.Size = new Size(261, 65);
+            btnSalir.Size = new Size(228, 49);
             btnSalir.TabIndex = 10;
             btnSalir.Text = "Salir";
             btnSalir.UseVisualStyleBackColor = true;
@@ -137,9 +141,10 @@
             btnBackup.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnBackup.Image = Properties.Resources.backup;
             btnBackup.ImageAlign = ContentAlignment.MiddleLeft;
-            btnBackup.Location = new Point(33, 376);
+            btnBackup.Location = new Point(29, 282);
+            btnBackup.Margin = new Padding(3, 2, 3, 2);
             btnBackup.Name = "btnBackup";
-            btnBackup.Size = new Size(261, 65);
+            btnBackup.Size = new Size(228, 49);
             btnBackup.TabIndex = 9;
             btnBackup.Text = "Backup";
             btnBackup.UseVisualStyleBackColor = true;
@@ -150,9 +155,10 @@
             btnReportes.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnReportes.Image = Properties.Resources.reportes;
             btnReportes.ImageAlign = ContentAlignment.MiddleLeft;
-            btnReportes.Location = new Point(33, 304);
+            btnReportes.Location = new Point(29, 228);
+            btnReportes.Margin = new Padding(3, 2, 3, 2);
             btnReportes.Name = "btnReportes";
-            btnReportes.Size = new Size(261, 65);
+            btnReportes.Size = new Size(228, 49);
             btnReportes.TabIndex = 8;
             btnReportes.Text = "Reportes";
             btnReportes.UseVisualStyleBackColor = true;
@@ -163,9 +169,10 @@
             btnReservas.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnReservas.Image = Properties.Resources.reserva;
             btnReservas.ImageAlign = ContentAlignment.MiddleLeft;
-            btnReservas.Location = new Point(33, 234);
+            btnReservas.Location = new Point(29, 176);
+            btnReservas.Margin = new Padding(3, 2, 3, 2);
             btnReservas.Name = "btnReservas";
-            btnReservas.Size = new Size(261, 65);
+            btnReservas.Size = new Size(228, 49);
             btnReservas.TabIndex = 7;
             btnReservas.Text = "Reservas";
             btnReservas.UseVisualStyleBackColor = true;
@@ -176,9 +183,10 @@
             btnCanchas.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnCanchas.Image = Properties.Resources.cancha;
             btnCanchas.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCanchas.Location = new Point(33, 163);
+            btnCanchas.Location = new Point(29, 122);
+            btnCanchas.Margin = new Padding(3, 2, 3, 2);
             btnCanchas.Name = "btnCanchas";
-            btnCanchas.Size = new Size(261, 65);
+            btnCanchas.Size = new Size(228, 49);
             btnCanchas.TabIndex = 6;
             btnCanchas.Text = "Canchas";
             btnCanchas.UseVisualStyleBackColor = true;
@@ -189,9 +197,10 @@
             btnUsuarios.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnUsuarios.Image = Properties.Resources.usuarios;
             btnUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
-            btnUsuarios.Location = new Point(33, 22);
+            btnUsuarios.Location = new Point(29, 16);
+            btnUsuarios.Margin = new Padding(3, 2, 3, 2);
             btnUsuarios.Name = "btnUsuarios";
-            btnUsuarios.Size = new Size(261, 65);
+            btnUsuarios.Size = new Size(228, 49);
             btnUsuarios.TabIndex = 5;
             btnUsuarios.Text = "Usuarios";
             btnUsuarios.UseVisualStyleBackColor = true;
@@ -202,9 +211,10 @@
             btnJugadores.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnJugadores.Image = Properties.Resources.jugadores;
             btnJugadores.ImageAlign = ContentAlignment.MiddleLeft;
-            btnJugadores.Location = new Point(33, 92);
+            btnJugadores.Location = new Point(29, 69);
+            btnJugadores.Margin = new Padding(3, 2, 3, 2);
             btnJugadores.Name = "btnJugadores";
-            btnJugadores.Size = new Size(261, 65);
+            btnJugadores.Size = new Size(228, 49);
             btnJugadores.TabIndex = 4;
             btnJugadores.Text = "Jugadores";
             btnJugadores.UseVisualStyleBackColor = true;
@@ -213,20 +223,22 @@
             // panelContenido
             // 
             panelContenido.Dock = DockStyle.Fill;
-            panelContenido.Location = new Point(334, 44);
+            panelContenido.Location = new Point(292, 33);
+            panelContenido.Margin = new Padding(3, 2, 3, 2);
             panelContenido.Name = "panelContenido";
-            panelContenido.Size = new Size(848, 609);
+            panelContenido.Size = new Size(742, 457);
             panelContenido.TabIndex = 3;
             panelContenido.Paint += panelContenido_Paint;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1182, 653);
+            ClientSize = new Size(1034, 490);
             Controls.Add(panelContenido);
             Controls.Add(panel1);
             Controls.Add(panelTop);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "MainForm";
             Text = "MainForm";
             Load += MainForm_Load;

@@ -91,7 +91,7 @@ namespace GestionCanchasDesktop
             btnCancelar.TabIndex = 13;
             btnCancelar.Text = "Cancelar";
             btnCancelar.UseVisualStyleBackColor = true;
-            btnCancelar.Click += btnCancelar_Click_1;
+            btnCancelar.Click += btnCancelar_Click;
             // 
             // btnLimpiar
             // 

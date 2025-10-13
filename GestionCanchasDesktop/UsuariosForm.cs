@@ -5,141 +5,91 @@ using System.Windows.Forms;
 
 namespace GestionCanchasDesktop
 {
+    // Este es el formulario para dar de alta, baja y modificar los usuarios.
     public partial class UsuariosForm : Form
     {
+        // Usamos esto para que la grilla no se configure más de una vez.
         private bool _gridConfigurada = false;
-        private Form? _formActual; 
+
+        // Guardamos el ID del usuario que estamos editando. Si es null, es uno nuevo.
         private int? _editandoId = null;
 
-
+        // El constructor del formulario, acá conectamos todos los eventos.
         public UsuariosForm()
         {
             InitializeComponent();
 
-            
+            // Eventos de los botones y del formulario
             this.Load += UsuariosForm_Load;
             btnGuardar.Click += btnGuardar_Click;
             btnLimpiar.Click += btnLimpiar_Click;
-            if (btnCancelar != null) btnCancelar.Click += btnCancelar_Click;
+            btnCancelar.Click += btnCancelar_Click;
             dgvUsuarios.CellClick += dgvUsuarios_CellClick;
+
+            // Eventos para validar lo que se escribe en los TextBox
+            txtNombre.KeyPress += txtLetras_KeyPress;
+            txtApellido.KeyPress += txtLetras_KeyPress;
         }
 
-        // =========================================================
-        // Load
-        // =========================================================
+        // Esto se dispara cuando el form se abre por primera vez.
         private void UsuariosForm_Load(object? sender, EventArgs e)
         {
-            ConfigurarGrilla();   // 1) columnas y comportamiento
-            CargarRoles();        // 2) combo de roles
-            CargarGrilla();       // 3) datos
-            LimpiarForm();        // 4) limpiar campos
+            ConfigurarGrilla();   // 1. Arma la tabla (grilla).
+            CargarRoles();        // 2. Llena el desplegable de roles.
+            CargarGrilla();       // 3. Carga los usuarios en la tabla.
+            LimpiarForm();        // 4. Limpia los campos para empezar.
         }
 
-        // =========================================================
-        // Configurar grilla 
-        // =========================================================
+        // Este método arma la grilla la primera vez, define las columnas y los botones.
         private void ConfigurarGrilla()
         {
             if (_gridConfigurada) return;
 
             var g = dgvUsuarios;
 
-            g.AutoGenerateColumns = false;          // importante: no autogenerar
-            g.AllowUserToAddRows = false;           // sin fila vacía al final
+            g.AutoGenerateColumns = false; // Importante para poner las columnas que nosotros queremos.
+            g.AllowUserToAddRows = false;  // Saca la fila vacía de abajo.
             g.MultiSelect = false;
             g.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             g.ReadOnly = true;
             g.Columns.Clear();
 
-            // Columnas enlazadas (coinciden con ListarUsuarios)
-            g.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "Id",
-                DataPropertyName = "Id",
-                Visible = false
-            });
-            g.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "Nombre",
-                DataPropertyName = "Nombre",
-                Width = 140,
-                HeaderText = "Nombre"
-            });
-            g.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "Apellido",
-                DataPropertyName = "Apellido",
-                Width = 140,
-                HeaderText = "Apellido"
-            });
-            g.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "Email",
-                DataPropertyName = "Email",
-                Width = 180,
-                HeaderText = "Email"
-            });
-            g.Columns.Add(new DataGridViewTextBoxColumn
-            {
-                Name = "Rol",
-                DataPropertyName = "Rol",
-                Width = 120,
-                HeaderText = "Rol"
-            });
-            g.Columns.Add(new DataGridViewCheckBoxColumn
-            {
-                Name = "Estado",
-                DataPropertyName = "Activo",
-                HeaderText = "Estado",
-                Width = 70
-            });
+            // Columnas que se llenan con los datos
+            g.Columns.Add(new DataGridViewTextBoxColumn { Name = "Id", DataPropertyName = "Id", Visible = false });
+            g.Columns.Add(new DataGridViewTextBoxColumn { Name = "Nombre", DataPropertyName = "Nombre", Width = 140, HeaderText = "Nombre" });
+            g.Columns.Add(new DataGridViewTextBoxColumn { Name = "Apellido", DataPropertyName = "Apellido", Width = 140, HeaderText = "Apellido" });
+            g.Columns.Add(new DataGridViewTextBoxColumn { Name = "Email", DataPropertyName = "Email", Width = 180, HeaderText = "Email" });
+            g.Columns.Add(new DataGridViewTextBoxColumn { Name = "Rol", DataPropertyName = "Rol", Width = 120, HeaderText = "Rol" });
+            g.Columns.Add(new DataGridViewCheckBoxColumn { Name = "Estado", DataPropertyName = "Activo", HeaderText = "Estado", Width = 70 });
 
-            // Botones
-            g.Columns.Add(new DataGridViewButtonColumn
-            {
-                Name = "Editar",
-                Text = "Editar",
-                UseColumnTextForButtonValue = true,
-                Width = 70
-            });
-            g.Columns.Add(new DataGridViewButtonColumn
-            {
-                Name = "Baja_Alta",
-                Text = "Baja/Alta",
-                UseColumnTextForButtonValue = true,
-                Width = 80
-            });
+            // Columnas con los botones de acción
+            g.Columns.Add(new DataGridViewButtonColumn { Name = "Editar", Text = "Editar", UseColumnTextForButtonValue = true, Width = 70 });
+            g.Columns.Add(new DataGridViewButtonColumn { Name = "Baja_Alta", Text = "Baja/Alta", UseColumnTextForButtonValue = true, Width = 80 });
 
             _gridConfigurada = true;
         }
 
-        // =========================================================
-        // Cargar roles en el combo 
-        // =========================================================
+        // Trae los roles de la base de datos y los pone en el desplegable (ComboBox).
         private void CargarRoles()
         {
             var roles = AuthService.GetRoles()
-                                   .Select(r => new { Id = r.Id, Nombre = r.Nombre })
-                                   .ToList();
+                                     .Select(r => new { r.Id, r.Nombre })
+                                     .ToList();
 
             cmbRol.DataSource = roles;
-            cmbRol.DisplayMember = "Nombre";
-            cmbRol.ValueMember = "Id";
+            cmbRol.DisplayMember = "Nombre"; // Lo que el usuario ve en la lista.
+            cmbRol.ValueMember = "Id";       // El valor que usamos por detrás (el ID).
         }
 
-        // =========================================================
-        // Cargar datos en la grilla 
-        // =========================================================
+        // Pide la lista de usuarios al service y la muestra en la grilla.
         private void CargarGrilla()
         {
             var dt = AuthService.ListarUsuarios(incluirInactivos: true);
-            dgvUsuarios.DataSource = null;     // limpiar binding previo
+            dgvUsuarios.DataSource = null;   // Limpiamos antes de recargar para que se refresque bien.
             dgvUsuarios.DataSource = dt;
         }
 
-        // =========================================================
-        // Helpers
-        // =========================================================
+        // Limpia todos los campos del formulario y lo deja listo para empezar de nuevo.
         private void LimpiarForm()
         {
             txtNombre.Clear();
@@ -148,45 +98,48 @@ namespace GestionCanchasDesktop
             txtPassword.Clear();
             chkActivo.Checked = true;
             if (cmbRol.Items.Count > 0) cmbRol.SelectedIndex = 0;
-            _editandoId = null;                 //  salir de edición
-            btnGuardar.Text = "Guardar";        //  texto default
-            txtNombre.Focus();
+
+            // Salimos del "modo edición".
+            _editandoId = null;
+            btnGuardar.Text = "Guardar";
+            txtNombre.Focus(); // Dejamos el cursor en el primer campo.
         }
 
-
+        // Revisa que no haya campos importantes vacíos antes de guardar.
         private bool Validar()
         {
-            if (string.IsNullOrWhiteSpace(txtNombre.Text)) { MessageBox.Show("Nombre requerido"); return false; }
-            if (string.IsNullOrWhiteSpace(txtApellido.Text)) { MessageBox.Show("Apellido requerido"); return false; }
-            if (string.IsNullOrWhiteSpace(txtEmail.Text)) { MessageBox.Show("Email requerido"); return false; }
-            if (cmbRol.SelectedItem == null) { MessageBox.Show("Seleccione un rol"); return false; }
-            if (string.IsNullOrEmpty(txtPassword.Text)) { MessageBox.Show("Ingrese una contraseña"); return false; }
+            if (string.IsNullOrWhiteSpace(txtNombre.Text)) { MessageBox.Show("El campo Nombre es requerido."); return false; }
+            if (string.IsNullOrWhiteSpace(txtApellido.Text)) { MessageBox.Show("El campo Apellido es requerido."); return false; }
+            if (string.IsNullOrWhiteSpace(txtEmail.Text)) { MessageBox.Show("El campo Email es requerido."); return false; }
+            if (cmbRol.SelectedItem == null) { MessageBox.Show("Debe seleccionar un rol."); return false; }
+
+            // La contraseña es obligatoria solo cuando creamos un usuario nuevo.
+            if (_editandoId == null && string.IsNullOrEmpty(txtPassword.Text))
+            {
+                MessageBox.Show("Debe ingresar una contraseña para el nuevo usuario.");
+                return false;
+            }
+
             return true;
         }
 
-        // =========================================================
-        // Botones
-        // =========================================================
+        // Se ejecuta al hacer clic en "Guardar" o "Actualizar".
         private void btnGuardar_Click(object? sender, EventArgs e)
         {
-            if (!Validar()) return;
+            if (!Validar()) return; // Si la validación falla, no hacemos nada más.
 
             try
             {
-                if (cmbRol.SelectedValue is not int rolId)
-                {
-                    MessageBox.Show("Seleccione un rol válido.");
-                    return;
-                }
+                int rolId = (int)cmbRol.SelectedValue;
 
                 if (_editandoId is null)
                 {
-                    // CREAR
+                    // Si no hay ID, estamos CREANDO un usuario.
                     AuthService.CrearUsuario(
                         nombre: txtNombre.Text.Trim(),
                         apellido: txtApellido.Text.Trim(),
                         email: txtEmail.Text.Trim(),
-                        password: txtPassword.Text,      // no trim
+                        password: txtPassword.Text,
                         rolId: rolId,
                         activo: chkActivo.Checked
                     );
@@ -194,7 +147,7 @@ namespace GestionCanchasDesktop
                 }
                 else
                 {
-                    // ACTUALIZAR (si el password está vacío, no lo cambia)
+                    // Si hay un ID, estamos ACTUALIZANDO uno que ya existe.
                     AuthService.ActualizarUsuario(
                         id: _editandoId.Value,
                         nombre: txtNombre.Text.Trim(),
@@ -202,104 +155,90 @@ namespace GestionCanchasDesktop
                         email: txtEmail.Text.Trim(),
                         rolId: rolId,
                         activo: chkActivo.Checked,
+                        // Si el campo de contraseña está vacío, no la cambiamos (mandamos null).
                         nuevaPassword: string.IsNullOrEmpty(txtPassword.Text) ? null : txtPassword.Text
                     );
-                    MessageBox.Show("✅ Usuario actualizado.");
+                    MessageBox.Show("✅ Usuario actualizado correctamente.");
                 }
 
-                CargarGrilla();
-                LimpiarForm();
-            }
-            catch (InvalidOperationException ex)
-            {
-                MessageBox.Show(ex.Message, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                CargarGrilla(); // Actualizamos la tabla.
+                LimpiarForm();  // Limpiamos los campos.
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al guardar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Ocurrió un error al guardar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // Llama al método para limpiar el formulario.
         private void btnLimpiar_Click(object? sender, EventArgs e) => LimpiarForm();
-
         private void btnCancelar_Click(object? sender, EventArgs e) => LimpiarForm();
 
-        // =========================================================
-        // Grilla: acciones por fila (Editar / Baja_Alta)
-        // =========================================================
-
+        // Este método se activa cuando se hace clic en cualquier celda de la grilla.
         private void dgvUsuarios_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
+            if (e.RowIndex < 0) return; // Para que no tire error si se hace clic en la cabecera.
 
-            var nombreCol = dgvUsuarios.Columns[e.ColumnIndex].Name;
+            string nombreCol = dgvUsuarios.Columns[e.ColumnIndex].Name;
+            var row = dgvUsuarios.Rows[e.RowIndex];
 
-            // ===== EDITAR =====
-            if (nombreCol.Equals("Editar", StringComparison.OrdinalIgnoreCase))
+            // Si se hizo clic en el botón "Editar".
+            if (nombreCol.Equals("Editar"))
             {
-                var row = dgvUsuarios.Rows[e.RowIndex];
-
-                // Guardamos el Id para modo edición
                 _editandoId = Convert.ToInt32(row.Cells["Id"].Value);
 
-                // Cargar campos
-                txtNombre.Text = Convert.ToString(row.Cells["Nombre"].Value) ?? "";
-                txtApellido.Text = Convert.ToString(row.Cells["Apellido"].Value) ?? "";
-                txtEmail.Text = Convert.ToString(row.Cells["Email"].Value) ?? "";
+                // Pasamos los datos de la fila a los campos del formulario.
+                txtNombre.Text = Convert.ToString(row.Cells["Nombre"].Value);
+                txtApellido.Text = Convert.ToString(row.Cells["Apellido"].Value);
+                txtEmail.Text = Convert.ToString(row.Cells["Email"].Value);
                 chkActivo.Checked = Convert.ToBoolean(row.Cells["Estado"].Value);
+                txtPassword.Clear(); // La contraseña nunca se muestra, solo se puede cambiar.
 
-                // Limpiar password: si el usuario escribe algo, se actualizará la clave.
-                txtPassword.Clear();
-
-                // Seleccionar el Rol en el combo por NOMBRE que trae la grilla
-                string rolNombre = Convert.ToString(row.Cells["Rol"].Value) ?? "";
+                // Buscamos el rol en el ComboBox para que quede seleccionado.
+                string rolNombre = Convert.ToString(row.Cells["Rol"].Value);
                 for (int i = 0; i < cmbRol.Items.Count; i++)
                 {
-                    dynamic it = cmbRol.Items[i]; // items son anónimos { Id, Nombre }
-                    if (string.Equals((string)it.Nombre, rolNombre, StringComparison.OrdinalIgnoreCase))
+                    dynamic item = cmbRol.Items[i];
+                    if (item.Nombre == rolNombre)
                     {
                         cmbRol.SelectedIndex = i;
                         break;
                     }
                 }
 
-                // Feedback visual
                 btnGuardar.Text = "Actualizar";
             }
 
-            // ===== BAJA / ALTA =====
-            if (nombreCol.Equals("Baja_Alta", StringComparison.OrdinalIgnoreCase))
+            // Si se hizo clic en el botón "Baja/Alta".
+            if (nombreCol.Equals("Baja_Alta"))
             {
-                int id = Convert.ToInt32(dgvUsuarios.Rows[e.RowIndex].Cells["Id"].Value);
-                bool activo = Convert.ToBoolean(dgvUsuarios.Rows[e.RowIndex].Cells["Estado"].Value);
+                int id = Convert.ToInt32(row.Cells["Id"].Value);
+                bool activo = Convert.ToBoolean(row.Cells["Estado"].Value);
 
-                var msg = activo ? "¿Desactivar este usuario?" : "¿Activar este usuario?";
-                if (MessageBox.Show(msg, "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                string msg = activo ? "¿Desactivar este usuario?" : "¿Activar este usuario?";
+                if (MessageBox.Show(msg, "Confirmar", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    try
-                    {
-                        AuthService.SetActivo(id, !activo);
-                        CargarGrilla();
+                    AuthService.SetActivo(id, !activo);
+                    CargarGrilla(); // Recargamos la grilla para ver el cambio de estado.
 
-                        
-                        if (_editandoId == id)
-                        {
-                            _editandoId = null;
-                            btnGuardar.Text = "Guardar";
-                            txtPassword.Clear();
-                        }
-                    }
-                    catch (Exception ex)
+                    // Si justo estábamos editando el usuario que desactivamos, limpiamos el form.
+                    if (_editandoId == id)
                     {
-                        MessageBox.Show("Error al cambiar estado: " + ex.Message);
+                        LimpiarForm();
                     }
                 }
             }
         }
 
-        private void btnLimpiar_Click_1(object sender, EventArgs e)
+        // Valida en tiempo real que solo se puedan escribir letras, espacios o usar la tecla de borrar.
+        private void txtLetras_KeyPress(object sender, KeyPressEventArgs e)
         {
-
+            // Si la tecla presionada NO es una letra Y TAMPOCO es una tecla de control (como borrar)
+            if (!char.IsLetter(e.KeyChar) && !char.IsControl(e.KeyChar) && !char.IsSeparator(e.KeyChar))
+            {
+                // Le decimos al sistema que "ignore" esa tecla, así que no se escribe.
+                e.Handled = true;
+            }
         }
     }
 }

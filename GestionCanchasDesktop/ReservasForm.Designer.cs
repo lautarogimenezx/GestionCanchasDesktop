@@ -30,7 +30,7 @@
         {
             gbReservas = new GroupBox();
             cmbMetodoPagoGrid = new ComboBox();
-            btnLimpiar = new Button();
+            btnLimpiar2 = new Button();
             btnGuardar = new Button();
             label9 = new Label();
             label8 = new Label();
@@ -57,7 +57,7 @@
             // gbReservas
             // 
             gbReservas.Controls.Add(cmbMetodoPagoGrid);
-            gbReservas.Controls.Add(btnLimpiar);
+            gbReservas.Controls.Add(btnLimpiar2);
             gbReservas.Controls.Add(btnGuardar);
             gbReservas.Controls.Add(label9);
             gbReservas.Controls.Add(label8);
@@ -87,20 +87,21 @@
             // 
             cmbMetodoPagoGrid.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbMetodoPagoGrid.FormattingEnabled = true;
-            cmbMetodoPagoGrid.Location = new Point(602, 174);
+            cmbMetodoPagoGrid.Location = new Point(525, 108);
             cmbMetodoPagoGrid.Name = "cmbMetodoPagoGrid";
             cmbMetodoPagoGrid.Size = new Size(121, 23);
             cmbMetodoPagoGrid.TabIndex = 19;
             cmbMetodoPagoGrid.Visible = false;
             // 
-            // btnLimpiar
+            // btnLimpiar2
             // 
-            btnLimpiar.Location = new Point(342, 173);
-            btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(75, 23);
-            btnLimpiar.TabIndex = 18;
-            btnLimpiar.Text = "Limpiar";
-            btnLimpiar.UseVisualStyleBackColor = true;
+            btnLimpiar2.Location = new Point(342, 173);
+            btnLimpiar2.Name = "btnLimpiar2";
+            btnLimpiar2.Size = new Size(75, 23);
+            btnLimpiar2.TabIndex = 18;
+            btnLimpiar2.Text = "Limpiar";
+            btnLimpiar2.UseVisualStyleBackColor = true;
+            btnLimpiar2.Click += btnLimpiar2_Click;
             // 
             // btnGuardar
             // 
@@ -292,8 +293,6 @@
         private Label label4;
         private Label label6;
         private Label label5;
-        private Button btnLimpiar;
-        private Button btnGuardar;
         private Label label9;
         private Label label8;
         private Label label7;
@@ -301,5 +300,7 @@
         private ComboBox cmbEstado;
         private DataGridView dgvReservas;
         private ComboBox cmbMetodoPagoGrid;
+        private Button btnLimpiar2;
+        private Button btnGuardar;
     }
 }
