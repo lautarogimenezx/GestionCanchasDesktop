@@ -8,8 +8,7 @@ namespace GestionCanchasDesktop
         public BackupForm()
         {
             InitializeComponent();
-            btnBackup.Click += BtnBackup_Click;
-            btnRestore.Click += BtnRestore_Click;
+          
         }
 
         private void BtnBackup_Click(object? sender, EventArgs e)
@@ -26,7 +25,19 @@ namespace GestionCanchasDesktop
                 try
                 {
                     BackupService.HacerBackup(sfd.FileName);
-                    MessageBox.Show("Backup realizado con éxito", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    var u = Program.UsuarioActual;
+                    BackupService.RegistrarAuditoria(
+                        accion: "BACKUP",
+                        archivo: sfd.FileName,
+                        usuario1Id: u?.Id ?? 0,
+                        usuario1Nombre: u is null ? "(desconocido)" : $"{u.Nombre} {u.Apellido} ({u.Rol})",
+                        usuario2Id: null,
+                        usuario2Nombre: null,
+                        detalle: "Backup manual desde la aplicación");
+
+                    MessageBox.Show("Backup realizado con éxito", "Éxito",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {
@@ -37,35 +48,73 @@ namespace GestionCanchasDesktop
 
         private void BtnRestore_Click(object? sender, EventArgs e)
         {
+            if (!SolicitarCredencial("Autenticá Administrador", "Administrador", out var admin)) return;
+            if (!SolicitarCredencial("Autenticá Contador", "Contador", out var contador)) return;
+
+            if (admin.Id == contador.Id)
+            {
+                MessageBox.Show("Los dos aprobadores deben ser usuarios distintos.",
+                    "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (MessageBox.Show(
+                    "Vas a RESTAURAR la base. Se perderán cambios no incluidos en el backup.\n\n¿Deseás continuar?",
+                    "Confirmar restauración",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                return;
+
             using var ofd = new OpenFileDialog
             {
                 Filter = "SQL Server Backup (*.bak)|*.bak",
                 Title = "Seleccionar archivo de respaldo"
             };
 
-            if (ofd.ShowDialog() == DialogResult.OK)
+            if (ofd.ShowDialog() != DialogResult.OK) return;
+
+            try
             {
-                try
-                {
-                    if (MessageBox.Show("¿Seguro que deseas restaurar este backup? Se perderán los datos actuales.",
-                        "Confirmar restauración",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning) == DialogResult.Yes)
-                    {
-                        BackupService.RestaurarBackup(ofd.FileName);
-                        MessageBox.Show("Base de datos restaurada con éxito", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error al restaurar backup: " + ex.Message);
-                }
+                BackupService.RestaurarBackupSeguro(ofd.FileName);
+
+                BackupService.RegistrarAuditoria(
+                    accion: "RESTORE",
+                    archivo: ofd.FileName,
+                    usuario1Id: admin.Id,
+                    usuario1Nombre: $"{admin.Nombre} {admin.Apellido} ({admin.Rol})",
+                    usuario2Id: contador.Id,
+                    usuario2Nombre: $"{contador.Nombre} {contador.Apellido} ({contador.Rol})",
+                    detalle: "Restauración con doble autorización");
+
+                MessageBox.Show("Base de datos restaurada con éxito", "Éxito",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al restaurar backup: " + ex.Message);
             }
         }
 
-        private void btnRestore_Click_1(object sender, EventArgs e)
+        private bool SolicitarCredencial(string titulo, string rolRequerido, out UserInfo user)
         {
+            user = default;
 
+            using var dlg = new AuthPromptForm(titulo);
+            if (dlg.ShowDialog(this) != DialogResult.OK) return false;
+
+            if (!AuthService.TryLogin(dlg.Email, dlg.Password, out var u) || u is null)
+            {
+                MessageBox.Show("Credenciales inválidas.");
+                return false;
+            }
+
+            if (!string.Equals(u.Rol, rolRequerido, StringComparison.OrdinalIgnoreCase))
+            {
+                MessageBox.Show($"Se requiere un usuario con rol '{rolRequerido}'.\nUsuario autenticado: {u.Rol}");
+                return false;
+            }
+
+            user = u; 
+            return true;
         }
     }
 }
