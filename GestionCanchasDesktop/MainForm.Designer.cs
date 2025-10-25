@@ -28,13 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
+            // Definición de colores (Tema Oscuro Minimalista)
+            System.Drawing.Color COLOR_ACENTO = System.Drawing.Color.FromArgb(139, 38, 56);
+            System.Drawing.Color COLOR_FONDO_PRIMARIO = System.Drawing.Color.FromArgb(248, 248, 248);
+            System.Drawing.Color COLOR_FONDO_SECUNDARIO = System.Drawing.Color.FromArgb(40, 40, 40);
+            System.Drawing.Color COLOR_TEXTO_CLARO = System.Drawing.Color.White;
+            System.Drawing.Color COLOR_TEXTO_OSCURO = System.Drawing.Color.FromArgb(40, 40, 40);
+
             panelTop = new Panel();
             btnLogout = new Button();
             pictureBox1 = new PictureBox();
             lblUsuario = new Label();
             label1 = new Label();
             panel1 = new Panel();
-            btnSalir = new Button();
+            btnSalir = new Button(); // Declaración presente
             btnBackup = new Button();
             btnReportes = new Button();
             btnReservas = new Button();
@@ -47,68 +54,76 @@
             panel1.SuspendLayout();
             SuspendLayout();
             // 
-            // panelTop
+            // panelTop (Encabezado)
             // 
-            panelTop.BackColor = Color.Black;
+            panelTop.BackColor = COLOR_FONDO_SECUNDARIO;
             panelTop.Controls.Add(btnLogout);
             panelTop.Controls.Add(pictureBox1);
             panelTop.Controls.Add(lblUsuario);
             panelTop.Controls.Add(label1);
             panelTop.Dock = DockStyle.Top;
-            panelTop.Location = new Point(0, 0);
-            panelTop.Margin = new Padding(4, 3, 4, 3);
+            panelTop.Location = new System.Drawing.Point(0, 0);
+            panelTop.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             panelTop.Name = "panelTop";
-            panelTop.Size = new Size(1034, 33);
+            panelTop.Size = new System.Drawing.Size(1034, 40);
             panelTop.TabIndex = 1;
-            panelTop.Paint += panelTop_Paint;
             // 
-            // btnLogout
+            // btnLogout (Cerrar Sesión)
             // 
-            btnLogout.Location = new Point(931, 7);
-            btnLogout.Margin = new Padding(3, 2, 3, 2);
+            btnLogout.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLogout.BackColor = System.Drawing.Color.Transparent;
+            btnLogout.FlatAppearance.BorderColor = COLOR_ACENTO;
+            btnLogout.FlatAppearance.BorderSize = 1;
+            btnLogout.FlatStyle = FlatStyle.Flat;
+            btnLogout.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            btnLogout.ForeColor = COLOR_TEXTO_CLARO;
+            btnLogout.Location = new System.Drawing.Point(915, 8);
+            btnLogout.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(93, 22);
+            btnLogout.Size = new System.Drawing.Size(110, 25);
             btnLogout.TabIndex = 3;
             btnLogout.Text = "Cerrar sesión";
-            btnLogout.UseVisualStyleBackColor = true;
+            btnLogout.UseVisualStyleBackColor = false;
             btnLogout.Click += btnLogout_Click;
             // 
-            // pictureBox1
+            // pictureBox1 (Logo)
             // 
             pictureBox1.Image = Properties.Resources.logo;
-            pictureBox1.Location = new Point(3, 5);
-            pictureBox1.Margin = new Padding(3, 2, 3, 2);
+            pictureBox1.Location = new System.Drawing.Point(8, 5);
+            pictureBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(35, 28);
+            pictureBox1.Size = new System.Drawing.Size(30, 30);
+            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage; // Asegura que la imagen se ajuste
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
-            // lblUsuario
+            // lblUsuario (Usuario)
             // 
-            lblUsuario.AutoSize = true;
-            lblUsuario.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblUsuario.ForeColor = Color.White;
-            lblUsuario.Location = new Point(658, 7);
+            lblUsuario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblUsuario.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0); // Bold para destacar
+            lblUsuario.ForeColor = COLOR_TEXTO_CLARO; // Texto claro sobre fondo oscuro
+            lblUsuario.Location = new System.Drawing.Point(650, 11); // Ajustar posición si es necesario
             lblUsuario.Name = "lblUsuario";
-            lblUsuario.Size = new Size(0, 20);
+            lblUsuario.Size = new System.Drawing.Size(250, 19); // Tamaño fijo para evitar AutoSize
             lblUsuario.TabIndex = 2;
+            lblUsuario.TextAlign = System.Drawing.ContentAlignment.MiddleRight; // Alinear a la derecha
             // 
-            // label1
+            // label1 (Título de la App)
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.ForeColor = Color.White;
-            label1.Location = new Point(37, 7);
-            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 0);
+            label1.ForeColor = COLOR_TEXTO_CLARO;
+            label1.Location = new System.Drawing.Point(45, 9);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(225, 20);
+            label1.Size = new System.Drawing.Size(245, 21);
             label1.TabIndex = 0;
-            label1.Text = "Gestion de Canchas Deportivas";
+            label1.Text = "Gestión de Canchas Deportivas";
             // 
-            // panel1
+            // panel1 (Menú Lateral)
             // 
-            panel1.BackColor = Color.DarkGray;
-            panel1.Controls.Add(btnSalir);
+            panel1.BackColor = COLOR_FONDO_SECUNDARIO;
+            panel1.Controls.Add(btnSalir); // Añadido btnSalir
             panel1.Controls.Add(btnBackup);
             panel1.Controls.Add(btnReportes);
             panel1.Controls.Add(btnReservas);
@@ -116,131 +131,125 @@
             panel1.Controls.Add(btnUsuarios);
             panel1.Controls.Add(btnJugadores);
             panel1.Dock = DockStyle.Left;
-            panel1.Location = new Point(0, 33);
-            panel1.Margin = new Padding(3, 2, 3, 2);
+            panel1.Location = new System.Drawing.Point(0, 40);
+            panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(292, 457);
+            panel1.Size = new System.Drawing.Size(250, 450);
             panel1.TabIndex = 2;
             // 
-            // btnSalir
-            // 
-            btnSalir.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSalir.Image = Properties.Resources.salir;
-            btnSalir.ImageAlign = ContentAlignment.MiddleLeft;
-            btnSalir.Location = new Point(29, 386);
-            btnSalir.Margin = new Padding(3, 2, 3, 2);
-            btnSalir.Name = "btnSalir";
-            btnSalir.Size = new Size(228, 49);
-            btnSalir.TabIndex = 10;
-            btnSalir.Text = "Salir";
-            btnSalir.UseVisualStyleBackColor = true;
-            btnSalir.Click += btnSalir_Click;
-            // 
-            // btnBackup
-            // 
-            btnBackup.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnBackup.Image = Properties.Resources.backup;
-            btnBackup.ImageAlign = ContentAlignment.MiddleLeft;
-            btnBackup.Location = new Point(29, 282);
-            btnBackup.Margin = new Padding(3, 2, 3, 2);
-            btnBackup.Name = "btnBackup";
-            btnBackup.Size = new Size(228, 49);
-            btnBackup.TabIndex = 9;
-            btnBackup.Text = "Backup";
-            btnBackup.UseVisualStyleBackColor = true;
-            btnBackup.Click += btnBackup_Click;
-            // 
-            // btnReportes
-            // 
-            btnReportes.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnReportes.Image = Properties.Resources.reportes;
-            btnReportes.ImageAlign = ContentAlignment.MiddleLeft;
-            btnReportes.Location = new Point(29, 228);
-            btnReportes.Margin = new Padding(3, 2, 3, 2);
-            btnReportes.Name = "btnReportes";
-            btnReportes.Size = new Size(228, 49);
-            btnReportes.TabIndex = 8;
-            btnReportes.Text = "Reportes";
-            btnReportes.UseVisualStyleBackColor = true;
-            btnReportes.Click += btnReportes_Click;
-            // 
-            // btnReservas
-            // 
-            btnReservas.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnReservas.Image = Properties.Resources.reserva;
-            btnReservas.ImageAlign = ContentAlignment.MiddleLeft;
-            btnReservas.Location = new Point(29, 176);
-            btnReservas.Margin = new Padding(3, 2, 3, 2);
-            btnReservas.Name = "btnReservas";
-            btnReservas.Size = new Size(228, 49);
-            btnReservas.TabIndex = 7;
-            btnReservas.Text = "Reservas";
-            btnReservas.UseVisualStyleBackColor = true;
-            btnReservas.Click += btnReservas_Click;
-            // 
-            // btnCanchas
-            // 
-            btnCanchas.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnCanchas.Image = Properties.Resources.cancha;
-            btnCanchas.ImageAlign = ContentAlignment.MiddleLeft;
-            btnCanchas.Location = new Point(29, 122);
-            btnCanchas.Margin = new Padding(3, 2, 3, 2);
-            btnCanchas.Name = "btnCanchas";
-            btnCanchas.Size = new Size(228, 49);
-            btnCanchas.TabIndex = 6;
-            btnCanchas.Text = "Canchas";
-            btnCanchas.UseVisualStyleBackColor = true;
-            btnCanchas.Click += btnCanchas_Click;
+            // --- INICIO DE CONFIGURACIÓN BÁSICA DE BOTONES DEL MENÚ ---
+            // (Los estilos complejos se aplican en MainForm.cs)
             // 
             // btnUsuarios
             // 
-            btnUsuarios.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnUsuarios.Image = Properties.Resources.usuarios;
-            btnUsuarios.ImageAlign = ContentAlignment.MiddleLeft;
-            btnUsuarios.Location = new Point(29, 16);
-            btnUsuarios.Margin = new Padding(3, 2, 3, 2);
+            btnUsuarios.Location = new System.Drawing.Point(0, 10);
+            btnUsuarios.Margin = new System.Windows.Forms.Padding(0);
             btnUsuarios.Name = "btnUsuarios";
-            btnUsuarios.Size = new Size(228, 49);
+            btnUsuarios.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            btnUsuarios.Size = new System.Drawing.Size(250, 45);
             btnUsuarios.TabIndex = 5;
-            btnUsuarios.Text = "Usuarios";
-            btnUsuarios.UseVisualStyleBackColor = true;
+            btnUsuarios.Text = "   Usuarios";
+            btnUsuarios.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             btnUsuarios.Click += btnUsuarios_Click;
             // 
             // btnJugadores
             // 
-            btnJugadores.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnJugadores.Image = Properties.Resources.jugadores;
-            btnJugadores.ImageAlign = ContentAlignment.MiddleLeft;
-            btnJugadores.Location = new Point(29, 69);
-            btnJugadores.Margin = new Padding(3, 2, 3, 2);
+            btnJugadores.Location = new System.Drawing.Point(0, 60); // 10 + 45 + 5 (espacio)
+            btnJugadores.Margin = new System.Windows.Forms.Padding(0);
             btnJugadores.Name = "btnJugadores";
-            btnJugadores.Size = new Size(228, 49);
-            btnJugadores.TabIndex = 4;
-            btnJugadores.Text = "Jugadores";
-            btnJugadores.UseVisualStyleBackColor = true;
+            btnJugadores.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            btnJugadores.Size = new System.Drawing.Size(250, 45);
+            btnJugadores.TabIndex = 6;
+            btnJugadores.Text = "   Jugadores";
+            btnJugadores.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             btnJugadores.Click += btnJugadores_Click;
+            // 
+            // btnCanchas
+            // 
+            btnCanchas.Location = new System.Drawing.Point(0, 110); // 60 + 45 + 5
+            btnCanchas.Margin = new System.Windows.Forms.Padding(0);
+            btnCanchas.Name = "btnCanchas";
+            btnCanchas.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            btnCanchas.Size = new System.Drawing.Size(250, 45);
+            btnCanchas.TabIndex = 4;
+            btnCanchas.Text = "   Canchas";
+            btnCanchas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnCanchas.Click += btnCanchas_Click;
+            // 
+            // btnReservas
+            // 
+            btnReservas.Location = new System.Drawing.Point(0, 160); // 110 + 45 + 5
+            btnReservas.Margin = new System.Windows.Forms.Padding(0);
+            btnReservas.Name = "btnReservas";
+            btnReservas.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            btnReservas.Size = new System.Drawing.Size(250, 45);
+            btnReservas.TabIndex = 3;
+            btnReservas.Text = "   Reservas";
+            btnReservas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnReservas.Click += btnReservas_Click;
+            // 
+            // btnReportes
+            // 
+            btnReportes.Location = new System.Drawing.Point(0, 210); // 160 + 45 + 5
+            btnReportes.Margin = new System.Windows.Forms.Padding(0);
+            btnReportes.Name = "btnReportes";
+            btnReportes.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            btnReportes.Size = new System.Drawing.Size(250, 45);
+            btnReportes.TabIndex = 2;
+            btnReportes.Text = "   Reportes";
+            btnReportes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnReportes.Click += btnReportes_Click;
+            // 
+            // btnBackup
+            // 
+            btnBackup.Location = new System.Drawing.Point(0, 260); // 210 + 45 + 5
+            btnBackup.Margin = new System.Windows.Forms.Padding(0);
+            btnBackup.Name = "btnBackup";
+            btnBackup.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            btnBackup.Size = new System.Drawing.Size(250, 45);
+            btnBackup.TabIndex = 1;
+            btnBackup.Text = "   Backup";
+            btnBackup.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnBackup.Click += btnBackup_Click;
+            // 
+            // btnSalir - RESTAURADO Y POSICIONADO
+            // 
+            btnSalir.Anchor = AnchorStyles.Bottom | AnchorStyles.Left; // Anclado al fondo
+            btnSalir.Location = new System.Drawing.Point(0, 395); // panel1.Height(450) - btn.Height(45) - Margen(10)
+            btnSalir.Margin = new System.Windows.Forms.Padding(0);
+            btnSalir.Name = "btnSalir";
+            btnSalir.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            btnSalir.Size = new System.Drawing.Size(250, 45);
+            btnSalir.TabIndex = 0; // Asegúrate de que tenga un TabIndex si usas navegación por teclado
+            btnSalir.Text = "   Salir";
+            btnSalir.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            btnSalir.Click += btnSalir_Click;
+
+            // --- FIN DE CONFIGURACIÓN BÁSICA DE BOTONES DEL MENÚ ---
             // 
             // panelContenido
             // 
+            panelContenido.BackColor = COLOR_FONDO_PRIMARIO;
             panelContenido.Dock = DockStyle.Fill;
-            panelContenido.Location = new Point(292, 33);
-            panelContenido.Margin = new Padding(3, 2, 3, 2);
+            panelContenido.Location = new System.Drawing.Point(250, 40);
+            panelContenido.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             panelContenido.Name = "panelContenido";
-            panelContenido.Size = new Size(742, 457);
+            panelContenido.Size = new System.Drawing.Size(784, 450);
             panelContenido.TabIndex = 3;
-            panelContenido.Paint += panelContenido_Paint;
             // 
             // MainForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1034, 490);
+            ClientSize = new System.Drawing.Size(1034, 490);
             Controls.Add(panelContenido);
             Controls.Add(panel1);
             Controls.Add(panelTop);
-            Margin = new Padding(3, 2, 3, 2);
+            Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, 0);
+            Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             Name = "MainForm";
-            Text = "MainForm";
+            StartPosition = FormStartPosition.CenterScreen; // Centrar al inicio
+            Text = "Gestión de Canchas Deportivas";
             Load += MainForm_Load;
             panelTop.ResumeLayout(false);
             panelTop.PerformLayout();
@@ -251,6 +260,9 @@
 
         #endregion
 
+        // 
+        // DECLARACIONES DE VARIABLES (DEBEN ESTAR TODAS)
+        // 
         private Panel panelTop;
         private Label label1;
         private Label lblUsuario;
