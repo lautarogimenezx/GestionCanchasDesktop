@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace GestionCanchasDesktop
 {
@@ -15,9 +18,10 @@ namespace GestionCanchasDesktop
         private readonly TimeSpan _cierre = new TimeSpan(23, 0, 0);
         private List<(DateTime inicio, int durMin)> _reservasDelDia = new();
         private bool _silenciarHorarioChange = false;
-
-        // CAMBIO: Variable para guardar el ID de la reserva que estamos editando
         private int _idReservaEditando = -1;
+
+        
+        private bool _handlingGridAction = false;
 
         public ReservasForm(int cancheroId)
         {
@@ -28,7 +32,12 @@ namespace GestionCanchasDesktop
             btnGuardar.Click += btnGuardar_Click;
             btnLimpiar2.Click += (_, __) => LimpiarForm();
 
+            // Aseguramos una única suscripción y a un solo evento
+            dgvReservas.CellClick -= dgvReservas_CellClick;
+            dgvReservas.CellContentClick -= dgvReservas_CellClick;
+            dgvReservas.CellContentClick -= dgvReservas_CellContentClick;
             dgvReservas.CellClick += dgvReservas_CellClick;
+
             dgvReservas.DataBindingComplete += (_, __) => DecorarBotones();
             cmbCancha.SelectedIndexChanged += (_, __) => RefrescarHorarios();
             dtpFecha.ValueChanged += (_, __) => RefrescarHorarios();
@@ -36,17 +45,12 @@ namespace GestionCanchasDesktop
             cmbEstado.SelectedIndexChanged += (_, __) => ToggleMetodoPago();
             cmbHorario.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            // CAMBIO: Asignar los eventos a nuestro nuevo ComboBox "fantasma"
             ConfigurarComboBoxGrid();
         }
 
-        // CAMBIO: Nuevo método para configurar el ComboBox que aparecerá en la grilla
         private void ConfigurarComboBoxGrid()
         {
-            // Llenamos el ComboBox con las opciones de pago
             cmbMetodoPagoGrid.Items.AddRange(new[] { "Efectivo", "Tarjeta", "Transferencia", "QR" });
-
-            // Asignamos los manejadores de eventos
             cmbMetodoPagoGrid.SelectionChangeCommitted += cmbMetodoPagoGrid_SelectionChangeCommitted;
             cmbMetodoPagoGrid.Leave += (_, __) => OcultarComboBoxGrid();
             cmbMetodoPagoGrid.KeyDown += (s, e) => { if (e.KeyCode == Keys.Escape) OcultarComboBoxGrid(); };
@@ -125,6 +129,7 @@ namespace GestionCanchasDesktop
 
             g.Columns.Add(new DataGridViewButtonColumn { Name = "MarcarPagado", Text = "Marcar pagado", UseColumnTextForButtonValue = true, Width = 120 });
             g.Columns.Add(new DataGridViewButtonColumn { Name = "Cancelar", Text = "Cancelar", UseColumnTextForButtonValue = true, Width = 90 });
+            g.Columns.Add(new DataGridViewButtonColumn { Name = "Recibo", Text = "Generar PDF", UseColumnTextForButtonValue = true, Width = 110 });
 
             _gridCfg = true;
         }
@@ -276,73 +281,111 @@ namespace GestionCanchasDesktop
             }
         }
 
-
         private void dgvReservas_CellClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex < 0) return;
-
-            var colName = dgvReservas.Columns[e.ColumnIndex].Name;
-            var row = dgvReservas.Rows[e.RowIndex];
-            int id = Convert.ToInt32(row.Cells["Id"].Value);
-            string estado = Convert.ToString(row.Cells["Estado"].Value) ?? "";
-            bool activa = row.Cells["Activa"].Value as bool? ?? false;
-
-            // Lógica para el botón "MarcarPagado"
-            if (colName == "MarcarPagado")
+            if (_handlingGridAction) return;       
+            _handlingGridAction = true;
+            try
             {
-                if (!activa || estado.Equals("Pagado", StringComparison.OrdinalIgnoreCase)) return;
+                if (e.RowIndex < 0 || e.ColumnIndex < 0) return;
 
-                // Guardamos el ID de la reserva que estamos por editar
-                _idReservaEditando = id;
+                var colName = dgvReservas.Columns[e.ColumnIndex].Name;
+                var row = dgvReservas.Rows[e.RowIndex];
+                int id = Convert.ToInt32(row.Cells["Id"].Value);
+                string estado = Convert.ToString(row.Cells["Estado"].Value) ?? "";
+                bool activa = row.Cells["Activa"].Value as bool? ?? false;
 
-                // Obtenemos la posición de la celda "MetodoPago" para saber dónde ubicar el ComboBox
-                Rectangle cellRectangle = dgvReservas.GetCellDisplayRectangle(dgvReservas.Columns["MetodoPago"].Index, e.RowIndex, false);
-
-                // Movemos nuestro ComboBox fantasma a esa posición
-                cmbMetodoPagoGrid.Location = cellRectangle.Location;
-                cmbMetodoPagoGrid.Size = cellRectangle.Size;
-
-                // Lo hacemos visible, lo traemos al frente y lo desplegamos
-                cmbMetodoPagoGrid.Visible = true;
-                cmbMetodoPagoGrid.BringToFront();
-                cmbMetodoPagoGrid.Focus();
-                cmbMetodoPagoGrid.DroppedDown = true;
-            }
-            // Lógica para el botón "Cancelar" (sin cambios)
-            else if (colName == "Cancelar")
-            {
-                if (!activa) return;
-
-                if (MessageBox.Show("¿Cancelar esta reserva?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (colName == "MarcarPagado")
                 {
-                    try
-                    {
-                        ReservasService.Cancelar(id);
-                        CargarGrilla();
-                        RefrescarHorarios();
-                    }
-                    catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    if (!activa || estado.Equals("Pagado", StringComparison.OrdinalIgnoreCase)) return;
+
+                    _idReservaEditando = id;
+
+                    var cellRectangle = dgvReservas.GetCellDisplayRectangle(
+                        dgvReservas.Columns["MetodoPago"].Index, e.RowIndex, false);
+
+                    cmbMetodoPagoGrid.Location = cellRectangle.Location;
+                    cmbMetodoPagoGrid.Size = cellRectangle.Size;
+
+                    cmbMetodoPagoGrid.Visible = true;
+                    cmbMetodoPagoGrid.BringToFront();
+                    cmbMetodoPagoGrid.Focus();
+                    cmbMetodoPagoGrid.DroppedDown = true;
                 }
+                else if (colName == "Cancelar")
+                {
+                    if (!activa) return;
+
+                    if (MessageBox.Show("¿Cancelar esta reserva?", "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            ReservasService.Cancelar(id);
+                            CargarGrilla();
+                            RefrescarHorarios();
+                        }
+                        catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); }
+                    }
+                }
+                else if (colName == "Recibo")
+                {
+                    if (!activa || !estado.Equals("Pagado", StringComparison.OrdinalIgnoreCase))
+                    {
+                        MessageBox.Show("Solo disponible para reservas activas y pagadas.");
+                        return;
+                    }
+
+                    using var sfd = new SaveFileDialog
+                    {
+                        Filter = "PDF (*.pdf)|*.pdf",
+                        FileName = $"Recibo_Reserva_{id}_{DateTime.Now:yyyyMMdd_HHmm}.pdf",
+                        Title = "Guardar recibo PDF"
+                    };
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        try
+                        {
+                            var info = ReservasService.GetReciboInfo(id);
+                            GenerarReciboPdf(sfd.FileName, id, info);
+                            MessageBox.Show("Recibo generado.", "OK", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error al generar recibo: " + ex.Message);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                _handlingGridAction = false;
             }
         }
 
+        
+        private void dgvReservas_CellContentClick(object? sender, DataGridViewCellEventArgs e)
+        {
+            
+        }
 
         private void cmbMetodoPagoGrid_SelectionChangeCommitted(object? sender, EventArgs e)
         {
-            // Si no hay item seleccionado o no estamos editando ninguna reserva, no hacemos nada
             if (cmbMetodoPagoGrid.SelectedItem == null || _idReservaEditando == -1) return;
+
+            if (cmbEstado.DataSource is not DataTable est)
+            {
+                MessageBox.Show("No se pudo acceder a la lista de estados.");
+                return;
+            }
 
             string metodo = cmbMetodoPagoGrid.SelectedItem.ToString()!;
 
             try
             {
-                // Obtenemos el ID del estado "Pagado"
-                var est = (DataTable)cmbEstado.DataSource;
                 int estadoPagadoId = est.AsEnumerable()
                     .First(r => string.Equals(r.Field<string>("Nombre"), "Pagado", StringComparison.OrdinalIgnoreCase))
                     .Field<int>("Id");
 
-                // Llamamos al servicio para actualizar el estado y el método de pago
                 ReservasService.SetEstado(_idReservaEditando, estadoPagadoId, metodo);
             }
             catch (Exception ex)
@@ -351,12 +394,10 @@ namespace GestionCanchasDesktop
             }
             finally
             {
-                // Ocultamos el ComboBox y recargamos la grilla para ver el cambio
                 OcultarComboBoxGrid();
                 CargarGrilla();
             }
         }
-
 
         private void OcultarComboBoxGrid()
         {
@@ -390,25 +431,65 @@ namespace GestionCanchasDesktop
                     btnCanc.Style.SelectionForeColor = btnCanc.Style.ForeColor;
                     btnCanc.Value = deshabilitar ? "—" : "Cancelar";
                 }
+
+                if (row.Cells["Recibo"] is DataGridViewButtonCell btnRec)
+                {
+                    bool habilitar = activa && estado.Equals("Pagado", StringComparison.OrdinalIgnoreCase);
+                    btnRec.ReadOnly = !habilitar;
+                    btnRec.FlatStyle = FlatStyle.Standard;
+                    btnRec.Style.ForeColor = habilitar ? Color.Black : Color.Gray;
+                    btnRec.Style.SelectionForeColor = btnRec.Style.ForeColor;
+                    btnRec.Value = habilitar ? "Generar PDF" : "—";
+                }
             }
         }
 
-        private void dgvReservas_CellContentClick(object? sender, DataGridViewCellEventArgs e)
-        {
-            dgvReservas_CellClick(sender, e);
-        }
-
-        private void cmbHorario_SelectedIndexChanged_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void btnLimpiar2_Click(object sender, EventArgs e)
-        {
-
-        }
-
+        private void cmbHorario_SelectedIndexChanged_1(object sender, EventArgs e) { }
+        private void btnLimpiar2_Click(object sender, EventArgs e) { }
         private void btnCancelar_Click(object sender, EventArgs e) => this.Close();
-       
+
+        private static void GenerarReciboPdf(string path, int reservaId,
+            (string Jugador, string Cancha, DateTime Inicio, DateTime Fin, int DuracionMin,
+             decimal PrecioHora, string Estado, string? MetodoPago, string Canchero) info)
+        {
+            var horas = Math.Round(info.DuracionMin / 60m, 2);
+            var subtotal = Math.Round(info.PrecioHora * horas, 2);
+
+            using var fs = new FileStream(path, FileMode.Create);
+            var doc = new Document(PageSize.A4, 40, 40, 40, 40);
+            PdfWriter.GetInstance(doc, fs);
+            doc.Open();
+
+            var fTitulo = FontFactory.GetFont("Arial", 16f, iTextSharp.text.Font.BOLD);
+            var fLabel = FontFactory.GetFont("Arial", 10f, iTextSharp.text.Font.BOLD);
+            var fText = FontFactory.GetFont("Arial", 10f);
+
+            var titulo = new Paragraph("Recibo de Reserva", fTitulo) { Alignment = Element.ALIGN_CENTER };
+            doc.Add(titulo);
+            doc.Add(new Paragraph($"Número: #{reservaId}", fText));
+            doc.Add(new Paragraph($"Fecha emisión: {DateTime.Now:dd/MM/yyyy HH:mm}", fText));
+            doc.Add(new Paragraph(" "));
+
+            var tabla = new PdfPTable(2) { WidthPercentage = 100 };
+            void Cell(string label, string value)
+            {
+                tabla.AddCell(new Phrase(label, fLabel));
+                tabla.AddCell(new Phrase(value, fText));
+            }
+
+            Cell("Jugador", info.Jugador);
+            Cell("Cancha", info.Cancha);
+            Cell("Inicio", info.Inicio.ToString("dd/MM/yyyy HH:mm"));
+            Cell("Fin", info.Fin.ToString("dd/MM/yyyy HH:mm"));
+            Cell("Duración (hs)", horas.ToString("0.##"));
+            Cell("Precio por hora", $"$ {info.PrecioHora:N2}");
+            Cell("Importe", $"$ {subtotal:N2}");
+            Cell("Estado", info.Estado);
+            Cell("Método de pago", string.IsNullOrWhiteSpace(info.MetodoPago) ? "-" : info.MetodoPago);
+            Cell("Atendido por", info.Canchero);
+
+            doc.Add(tabla);
+            doc.Close();
+        }
     }
 }

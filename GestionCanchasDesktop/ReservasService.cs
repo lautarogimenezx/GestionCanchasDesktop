@@ -20,8 +20,6 @@ namespace GestionCanchasDesktop
                 ?? throw new InvalidOperationException("Falta ConnectionStrings:CanchaDb en appsettings.json");
         }
 
-        // ===================== Combos =====================
-
         public static DataTable GetJugadoresActivos()
         {
             var dt = new DataTable();
@@ -50,8 +48,6 @@ namespace GestionCanchasDesktop
             da.Fill(dt);
             return dt;
         }
-
-        // ===================== Listado =====================
 
         public static DataTable Listar(DateTime? desde = null, DateTime? hasta = null, bool incluirCanceladas = true)
         {
@@ -87,9 +83,6 @@ ORDER BY r.Inicio DESC;";
             return dt;
         }
 
-        // ===================== Disponibilidad =====================
-
-        // Trae reservas del día
         public static List<(DateTime inicio, int durMin)> GetReservasDeCanchaPorDia(int canchaId, DateTime fechaDia)
         {
             var lista = new List<(DateTime, int)>();
@@ -117,7 +110,6 @@ WHERE r.CanchaId = @CanchaId
             return lista;
         }
 
-        
         public static List<DateTime> GetHorariosDisponibles(
             int canchaId, DateTime fechaDia, int duracionMin,
             TimeSpan horaApertura, TimeSpan horaCierre, int pasoMin = 30)
@@ -143,8 +135,6 @@ WHERE r.CanchaId = @CanchaId
             return libres;
         }
 
-        // ===================== Altas / Cambios =====================
-
         public static void Crear(int jugadorId, int canchaId, int cancheroId, DateTime inicio, int duracionMin, int estadoId, string? metodoPago)
         {
             if (EsEstadoPagado(estadoId) && string.IsNullOrWhiteSpace(metodoPago))
@@ -152,13 +142,10 @@ WHERE r.CanchaId = @CanchaId
 
             using var cn = new SqlConnection(GetCs());
             cn.Open();
-
-            // SERIALIZABLE + UPDLOCK/HOLDLOCK para bloquear correctamente el hueco
             using var tx = cn.BeginTransaction(IsolationLevel.Serializable);
 
             var fin = inicio.AddMinutes(duracionMin);
 
-            // chequeo robusto de solape
             using (var chk = new SqlCommand(@"
 SELECT TOP 1 1
 FROM dbo.Reservas r WITH (UPDLOCK, HOLDLOCK)
@@ -221,7 +208,6 @@ WHERE Id=@Id;", cn);
             cmd.ExecuteNonQuery();
         }
 
-        // helper
         private static bool EsEstadoPagado(int estadoId)
         {
             using var cn = new SqlConnection(GetCs());
@@ -229,6 +215,47 @@ WHERE Id=@Id;", cn);
             cmd.Parameters.AddWithValue("@Id", estadoId);
             cn.Open();
             return cmd.ExecuteScalar() != null;
+        }
+
+        public static (string Jugador, string Cancha, DateTime Inicio, DateTime Fin, int DuracionMin,
+                       decimal PrecioHora, string Estado, string? MetodoPago, string Canchero)
+            GetReciboInfo(int reservaId)
+        {
+            using var cn = new SqlConnection(GetCs());
+            using var cmd = new SqlCommand(@"
+SELECT 
+    j.Apellido + ', ' + j.Nombre        AS Jugador,
+    CAST(c.NroCancha AS NVARCHAR(10)) + ' - ' + c.Tipo AS Cancha,
+    r.Inicio,
+    DATEADD(minute, r.DuracionMin, r.Inicio) AS Fin,
+    r.DuracionMin,
+    c.PrecioHora,
+    e.Nombre AS Estado,
+    r.MetodoPago,
+    u.Nombre + ' ' + u.Apellido         AS Canchero
+FROM dbo.Reservas r
+JOIN dbo.Jugadores j ON j.Id = r.JugadorId
+JOIN dbo.Canchas   c ON c.Id = r.CanchaId
+JOIN dbo.Usuarios  u ON u.Id = r.CancheroId
+JOIN dbo.Estados   e ON e.Id = r.EstadoId
+WHERE r.Id = @Id;", cn);
+
+            cmd.Parameters.AddWithValue("@Id", reservaId);
+            cn.Open();
+            using var rd = cmd.ExecuteReader();
+            if (!rd.Read()) throw new InvalidOperationException("Reserva no encontrada.");
+
+            return (
+                rd.GetString(0),
+                rd.GetString(1),
+                rd.GetDateTime(2),
+                rd.GetDateTime(3),
+                rd.GetInt32(4),
+                rd.GetDecimal(5),
+                rd.GetString(6),
+                rd.IsDBNull(7) ? null : rd.GetString(7),
+                rd.GetString(8)
+            );
         }
     }
 }
