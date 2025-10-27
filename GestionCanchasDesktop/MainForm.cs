@@ -7,12 +7,12 @@ namespace GestionCanchasDesktop
 {
     public partial class MainForm : Form
     {
-        // --- TEMA OSCURO (Con nuevos colores para deshabilitado) ---
+        // --- TEMA OSCURO
         private readonly Color COLOR_ACENTO_OSCURO = Color.FromArgb(139, 38, 56);
         private readonly Color COLOR_FONDO_PRIMARIO_OSCURO = Color.FromArgb(248, 248, 248);
         private readonly Color COLOR_FONDO_SECUNDARIO_OSCURO = Color.FromArgb(40, 40, 40); // Fondo menú/header
         private readonly Color COLOR_TEXTO_CLARO_OSCURO = Color.White;
-        // NUEVOS COLORES PARA DESHABILITADO EN MODO OSCURO
+        // COLORES PARA DESHABILITADO EN MODO OSCURO
         private readonly Color COLOR_BOTON_DESHABILITADO_OSCURO_FONDO = Color.FromArgb(30, 30, 30); // Más oscuro que el fondo
         private readonly Color COLOR_TEXTO_DESHABILITADO_OSCURO = Color.FromArgb(100, 100, 100); // Texto muy apagado
         private readonly Color COLOR_MENU_HOVER_FONDO_OSCURO = Color.FromArgb(60, 60, 60);
@@ -34,7 +34,7 @@ namespace GestionCanchasDesktop
             this.Text = $"Gestión de Canchas - Bienvenido {nombre} ({rol})";
             lblUsuario.Text = $"{nombre} {apellido} ({rol})";
 
-            // Aplicar estilos iniciales y eventos (siempre será modo oscuro)
+            // Aplicar estilos iniciales y eventos (modo oscuro)
             AplicarTemaOscuro();
 
             // ===== Permisos por rol =====
@@ -64,9 +64,9 @@ namespace GestionCanchasDesktop
         private void AplicarTemaOscuro()
         {
             // Aplicar colores a paneles principales
-            this.BackColor = COLOR_FONDO_PRIMARIO_OSCURO; // Fondo contenido
+            this.BackColor = COLOR_FONDO_PRIMARIO_OSCURO; 
             panelTop.BackColor = COLOR_FONDO_SECUNDARIO_OSCURO;
-            panel1.BackColor = COLOR_FONDO_SECUNDARIO_OSCURO; // <-- CORREGIDO: Usar panel1
+            panel1.BackColor = COLOR_FONDO_SECUNDARIO_OSCURO; 
             panelContenido.BackColor = COLOR_FONDO_PRIMARIO_OSCURO;
 
             // Aplicar colores a elementos del panel superior
@@ -103,7 +103,7 @@ namespace GestionCanchasDesktop
         }
 
         // 
-        // MÉTODO ACTUALIZADO PARA ESTILIZAR BOTONES DESHABILITADOS EN MODO OSCURO
+        // ESTILIZAR BOTONES DESHABILITADOS EN MODO OSCURO
         // 
         private void ActualizarEstiloBotonesPorPermiso()
         {
@@ -201,8 +201,8 @@ namespace GestionCanchasDesktop
             formHijo.Show();
         }
 
-        // --- Manejadores de Eventos Click ---
-        // (Sin cambios lógicos)
+        // --- Manejadores de Eventos Click 
+    
         private void btnUsuarios_Click(object sender, EventArgs e)
         {
             if (!btnUsuarios.Enabled) return;

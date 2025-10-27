@@ -59,7 +59,7 @@ namespace GestionCanchasDesktop
                 }
                 else
                 {
-                    lblError.Text = "Email o contraseña inválidos (o usuario inactivo).";
+                    lblError.Text = "Email o contraseña inválidos";
                     lblError.Visible = true;
                 }
             }

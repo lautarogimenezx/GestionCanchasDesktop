@@ -5,7 +5,7 @@ namespace GestionCanchasDesktop
 {
     internal static class Program
     {
-        // ← NUEVO: aquí guardamos el usuario logueado
+        // guardamos el usuario logueado
         public static UserInfo? UsuarioActual { get; set; }
 
         [STAThread]

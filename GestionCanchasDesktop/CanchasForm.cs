@@ -72,7 +72,7 @@ namespace GestionCanchasDesktop
         // Carga los tipos de cancha en el ComboBox.
         private void CargarTipos()
         {
-            // Estos tipos están fijos en el código. Si se necesitaran más, se podrían traer de una tabla.
+            // Estos tipos están fijos.
             var tipos = new[] { "Fútbol 5", "Fútbol 7", "Fútbol 11", "Pádel", "Tenis", "Básquet", "Vóley" };
             cmbTipo.DataSource = tipos;
         }
@@ -219,7 +219,6 @@ namespace GestionCanchasDesktop
         // Permite números, teclas de control y un único separador decimal.
         private void txtPrecio_KeyPress(object sender, KeyPressEventArgs e)
         {
-            // El separador puede ser ',' o '.' dependiendo de la configuración del sistema.
             string separadorDecimal = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             var txt = sender as TextBox;
 

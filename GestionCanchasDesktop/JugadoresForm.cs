@@ -46,7 +46,7 @@ namespace GestionCanchasDesktop
             if (_gridCfg) return; // Si ya está configurada, no hace nada.
 
             var g = dgvJugadores;
-            g.AutoGenerateColumns = false; // Para poder definir nuestras propias columnas.
+            g.AutoGenerateColumns = false; 
             g.AllowUserToAddRows = false;
             g.MultiSelect = false;
             g.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -158,7 +158,7 @@ namespace GestionCanchasDesktop
                 btnGuardar.Text = "Actualizar";
             }
 
-            // Si se hizo clic en el botón "Eliminar" (que en realidad da de baja o alta).
+            // Si se hizo clic en el botón "Eliminar" (da de baja o alta).
             if (col.Equals("Eliminar"))
             {
                 int id = Convert.ToInt32(row.Cells["Id"].Value);

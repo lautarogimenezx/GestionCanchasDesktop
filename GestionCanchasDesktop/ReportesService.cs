@@ -5,11 +5,11 @@ using System.Data;
 
 namespace GestionCanchasDesktop
 {
-    // Esta clase estática se encarga de todo lo que tenga que ver con la base de datos para los reportes.
+    // Se encarga de todo lo que tenga que ver con la base de datos para los reportes.
     // Así no mezclamos código SQL en el formulario.
     internal static class ReportesService
     {
-        // Un método rápido para agarrar la cadena de conexión del archivo appsettings.json.
+        // Un método para agarrar la cadena de conexión del archivo appsettings.json.
         private static string GetCs()
         {
             var cfg = new ConfigurationBuilder()
@@ -39,7 +39,7 @@ namespace GestionCanchasDesktop
             var dt = new DataTable(); // Acá vamos a guardar los resultados.
             using var cn = new SqlConnection(GetCs());
 
-            // Armamos la consulta SQL. El '$' al principio nos deja meter variables como {groupBy}.
+            // Armamos la consulta SQL.
             string sql = $@"
 -- Seleccionamos el período (que puede ser día, semana o mes) y calculamos el total.
 -- El total es la duración en horas (por eso el / 60.0) multiplicado por el precio.
@@ -66,7 +66,7 @@ ORDER BY {groupBy};";
 
         // ================== Horarios más reservados ==================
 
-        // Este es más simple, solo cuenta cuántas veces se reservó cada hora.
+        // Cuenta cuántas veces se reservó cada hora.
         public static DataTable GetHorariosMasReservados(DateTime? desde, DateTime? hasta)
         {
             var dt = new DataTable();
@@ -81,7 +81,7 @@ WHERE r.Activo = 1
   AND (@Desde IS NULL OR r.Inicio >= @Desde)
   AND (@Hasta IS NULL OR r.Inicio < @Hasta)
 GROUP BY DATEPART(HOUR, r.Inicio) -- Agrupamos por hora.
-ORDER BY Cantidad DESC;"; // Ordenamos para que el más popular aparezca primero.
+ORDER BY Cantidad DESC;";
 
             using var da = new SqlDataAdapter(sql, cn);
             da.SelectCommand!.Parameters.AddWithValue("@Desde", (object?)desde ?? DBNull.Value);
@@ -111,7 +111,7 @@ WHERE r.Activo = 1
   AND (@Desde IS NULL OR r.Inicio >= @Desde)
   AND (@Hasta IS NULL OR r.Inicio < @Hasta)
 GROUP BY u.Nombre, u.Apellido -- Agrupamos por el canchero.
-ORDER BY Total DESC;"; // El que más recaudó, primero.
+ORDER BY Total DESC;";
 
             using var da = new SqlDataAdapter(sql, cn);
             da.SelectCommand!.Parameters.AddWithValue("@Desde", (object?)desde ?? DBNull.Value);
