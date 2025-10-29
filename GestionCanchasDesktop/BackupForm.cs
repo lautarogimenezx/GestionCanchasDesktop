@@ -24,7 +24,7 @@ namespace GestionCanchasDesktop
             {
                 try
                 {
-                    BackupService.HacerBackup(sfd.FileName);
+                    BackupService.HacerBackupSeguro(sfd.FileName);
 
                     var u = Program.UsuarioActual;
                     BackupService.RegistrarAuditoria(

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Data;
+using System.IO;
 
 namespace GestionCanchasDesktop
 {
@@ -24,23 +25,83 @@ namespace GestionCanchasDesktop
             return builder.InitialCatalog;
         }
 
-        public static void HacerBackup(string rutaBak)
+        /// <summary>
+        /// Obtiene el directorio de backup por defecto de la instancia SQL.
+        /// </summary>
+        private static string GetServerDefaultBackupDir(SqlConnection cn)
+        {
+            // 1) Intento estándar (SQL 2012+)
+            using (var cmd = new SqlCommand("SELECT CAST(SERVERPROPERTY('InstanceDefaultBackupPath') AS NVARCHAR(4000));", cn))
+            {
+                var r = cmd.ExecuteScalar() as string;
+                if (!string.IsNullOrWhiteSpace(r)) return r;
+            }
+
+            // 2) Fallback vía registro
+            using (var cmd = new SqlCommand(
+                "DECLARE @dir NVARCHAR(4000);" +
+                "EXEC master.dbo.xp_instance_regread N'HKEY_LOCAL_MACHINE', " +
+                "N'SOFTWARE\\Microsoft\\MSSQLServer\\MSSQLServer', N'BackupDirectory', @dir OUTPUT;" +
+                "SELECT @dir;", cn))
+            {
+                var r = cmd.ExecuteScalar() as string;
+                if (!string.IsNullOrWhiteSpace(r)) return r;
+            }
+
+            // 3) Último recurso: carpeta típica (puede variar por versión/instancia)
+            // El backup igualmente fallará si no coincide, pero rara vez se llega aquí
+            return @"C:\Program Files\Microsoft SQL Server\MSSQL15.SQLEXPRESS\MSSQL\Backup";
+        }
+
+        private static bool SoportaCompresion(SqlConnection cn)
+        {
+            // EngineEdition: 4 = Express (sin compresión de backup)
+            using var cmd = new SqlCommand("SELECT CAST(SERVERPROPERTY('EngineEdition') AS INT);", cn);
+            var edition = (int)cmd.ExecuteScalar();
+            return edition != 4; // true si NO es Express
+        }
+
+        public static void HacerBackupSeguro(string destinoUsuario)
         {
             string db = GetDbName();
 
             using var cn = new SqlConnection(GetCs());
             cn.Open();
 
-            string sql = $@"
+            var serverBackupDir = GetServerDefaultBackupDir(cn);
+            Directory.CreateDirectory(serverBackupDir);
+
+            var tempName = $"TMP_{db}_{DateTime.Now:yyyyMMdd_HHmmss}_{Guid.NewGuid():N}.bak";
+            var serverBakPath = Path.Combine(serverBackupDir, tempName);
+
+            bool puedeComprimir = SoportaCompresion(cn);
+            string opciones = puedeComprimir
+                ? "COPY_ONLY, CHECKSUM, INIT, STATS = 10, FORMAT"              
+                : "COPY_ONLY, CHECKSUM, INIT, STATS = 10, FORMAT";              
+
+            if (puedeComprimir) opciones += ", COMPRESSION";
+
+            // 1) Backup en la carpeta del servidor (cuenta del servicio tiene permisos)
+            using (var cmd = new SqlCommand($@"
 BACKUP DATABASE [{db}]
 TO DISK = @Ruta
-WITH COPY_ONLY, COMPRESSION, CHECKSUM, INIT, STATS = 10;";
+WITH {opciones};", cn))
+            {
+                cmd.Parameters.AddWithValue("@Ruta", serverBakPath);
+                cmd.ExecuteNonQuery();
+            }
 
-            using var cmd = new SqlCommand(sql, cn);
-            cmd.Parameters.AddWithValue("@Ruta", rutaBak);
-            cmd.ExecuteNonQuery();
+            // 2) Copia al destino elegido por el usuario (con permisos del usuario)
+            var destinoFinal = destinoUsuario;
+            var destinoDir = Path.GetDirectoryName(destinoFinal)!;
+            Directory.CreateDirectory(destinoDir);
+            File.Copy(serverBakPath, destinoFinal, overwrite: true);
+
+            // 3) Limpieza del archivo temporal
+            try { File.Delete(serverBakPath); } catch { /* best effort */ }
         }
 
+        // --- RESTORE SEGURO ---
         public static void RestaurarBackupSeguro(string rutaBak)
         {
             string db = GetDbName();
@@ -49,7 +110,6 @@ WITH COPY_ONLY, COMPRESSION, CHECKSUM, INIT, STATS = 10;";
             using var cn = new SqlConnection(builder.ConnectionString);
             cn.Open();
 
-            // 1) Verificación: intento WITH CHECKSUM y, si falla por falta de checksums, pruebo sin opción
             try
             {
                 using var verify1 = new SqlCommand("RESTORE VERIFYONLY FROM DISK = @Ruta WITH CHECKSUM;", cn);
@@ -63,7 +123,6 @@ WITH COPY_ONLY, COMPRESSION, CHECKSUM, INIT, STATS = 10;";
                 verify2.ExecuteNonQuery();
             }
 
-            // 2) Restauración
             using var cmd = new SqlCommand($@"
 ALTER DATABASE [{db}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 
@@ -75,7 +134,6 @@ ALTER DATABASE [{db}] SET MULTI_USER;", cn);
             cmd.Parameters.AddWithValue("@Ruta", rutaBak);
             cmd.ExecuteNonQuery();
         }
-
 
         public static void RegistrarAuditoria(string accion, string archivo, int usuario1Id, string usuario1Nombre, int? usuario2Id, string? usuario2Nombre, string detalle = "")
         {
